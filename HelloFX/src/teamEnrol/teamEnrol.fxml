@@ -22,7 +22,7 @@
          </font>
       </Label>
       <TextField fx:id="teamName" layoutX="132.0" layoutY="71.0" promptText="Team Name" />
-      <Button layoutX="372.0" layoutY="185.0" mnemonicParsing="false" onAction="#imageChooserAction" text="TEAM LOGO" />
+      <Button layoutX="399.0" layoutY="185.0" mnemonicParsing="false" onAction="#imageChooserAction" text="TEAM LOGO" />
       <TextField fx:id="headcoach" layoutX="132.0" layoutY="116.0" promptText="Head Coach" />
       <TextField fx:id="boardpresident" layoutX="148.0" layoutY="152.0" promptText="Board President" />
       <Label layoutX="42.0" layoutY="120.0" text="Head Coach: " textFill="#f0781d">
@@ -33,21 +33,20 @@
          <font>
             <Font name="Bodoni MT" size="14.0" />
          </font></Label>
-      <Label fx:id="playernumbers" layoutX="61.0" layoutY="278.0" prefHeight="53.0" prefWidth="420.0" textFill="#ff8349">
+      <Label fx:id="playernumbers" layoutX="61.0" layoutY="287.0" prefHeight="44.0" prefWidth="420.0" textFill="#ff8349">
          <font>
             <Font size="36.0" />
          </font>
       </Label>
-      <Button layoutX="228.0" layoutY="338.0" mnemonicParsing="false" onAction="#teamAddPlayer" text="Add a Player" />
-      <Button layoutX="34.0" layoutY="395.0" mnemonicParsing="false" onAction="#teamConfirm" prefHeight="34.0" prefWidth="107.0" text="Confirm Team" />
+      <Button layoutX="228.0" layoutY="357.0" mnemonicParsing="false" onAction="#teamAddPlayer" text="Add a Player" />
+      <Button layoutX="387.0" layoutY="239.0" mnemonicParsing="false" onAction="#teamConfirm" prefHeight="34.0" prefWidth="107.0" text="Confirm Team" />
       <DatePicker fx:id="establishdate" layoutX="148.0" layoutY="185.0" prefHeight="25.0" prefWidth="149.0" />
       <Label layoutX="38.0" layoutY="189.0" text="Established Date: " textFill="#eb7c2d">
          <font>
             <Font name="Bodoni MT" size="14.0" />
          </font>
       </Label>
-      <Button layoutX="375.0" layoutY="247.0" mnemonicParsing="false" onAction="#teamVerification" text="Verify Team" />
-      <Label fx:id="verificationmessage" layoutX="34.0" layoutY="230.0" prefHeight="17.0" prefWidth="259.0" textFill="#0dee06" />
+      <Label fx:id="verificationmessage" layoutX="34.0" layoutY="230.0" prefHeight="17.0" prefWidth="314.0" textFill="#0dee06" />
       <ImageView fx:id="teamlogo" fitHeight="150.0" fitWidth="200.0" layoutX="313.0" layoutY="21.0" pickOnBounds="true" preserveRatio="true" />
       <Label layoutX="33.0" layoutY="14.0" text="*" textFill="#fc0000">
          <font>
@@ -76,5 +75,6 @@
       </Label>
       <Label layoutX="48.0" layoutY="19.0" text="marks are required" textFill="#f50707" />
       <Button layoutX="455.0" layoutY="24.0" mnemonicParsing="false" onAction="#backtoFront" text="&lt;-Back" />
+      <Button layoutX="42.0" layoutY="409.0" mnemonicParsing="false" onAction="#teamEnrolDone" text="Done" />
    </children>
 </AnchorPane>

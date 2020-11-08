@@ -59,11 +59,6 @@ public class Controller implements Initializable {
     private ImageView teamlogo;
 
     private List<String> filelist;
-    private List<Player> playerList;
-    private List<Batsman> batsmanList;
-    private List<Bowler> bowlerList;
-    private List<Wicket_Keeper> wicketKeepers;
-    private List<FileInputStream> playerInputStream;
     private final int numplayers = 11;
     private int counter = 11;
     private boolean teamok = false;
@@ -72,7 +67,7 @@ public class Controller implements Initializable {
     private Team team = null;
     private PlayerController pc = null;
 
-    public void teamVerification(ActionEvent event) {
+    public void teamConfirm(ActionEvent event) {
 
         DatabaseConnection dc = new DatabaseConnection();
 
@@ -100,20 +95,42 @@ public class Controller implements Initializable {
 
 
                         team = new Team(primarykey, teamName.getText(), date, headcoach.getText(), boardpresident.getText());
-                        playerList = new ArrayList<Player>();
-                        batsmanList = new ArrayList<Batsman>();
-                        bowlerList = new ArrayList<Bowler>();
-                        wicketKeepers = new ArrayList<Wicket_Keeper>();
-                        playerInputStream = new ArrayList<FileInputStream>();
-                        verificationmessage.setText("Your team has been verified successfully");
-                        counter = numplayers;
+                        team.insertTeam(fin);
+                        verificationmessage.setText("Your team is confirmed");
                         showNumberofPlayer();
                     }
                 }
-                else if(headcoach.getText().isBlank() || boardpresident.getText().isBlank() || establishdate.getValue() == null)
+                else if(headcoach.getText().isBlank() || boardpresident.getText().isBlank() || establishdate.getValue() == null) {
+                    teamok = false;
+                    verificationmessage.setText("");
                     JOptionPane.showMessageDialog(null, "insert all the required fields");
-                else
-                    JOptionPane.showMessageDialog(null, "This team name is taken");
+                }
+                else {
+                    String query = "SELECT * FROM CRICBUZZ.TEAM WHERE TEAM_ID = (SELECT MAX(TEAM_ID) AS TEAM_ID FROM CRICBUZZ.TEAM)";
+                    rs = dc.getQueryResult(query);
+                    if(rs.next() && team!=null) {
+                        String name = rs.getString("TEAM_NAME");
+                        String coach = rs.getString("HEAD_COACH");
+                        String board = rs.getString("BOARD_PRESIDENT");
+                        java.sql.Date date = rs.getDate("ESTABLISH_DATE");
+                        java.util.Date edate = java.util.Date.from(establishdate.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+                        java.sql.Date sqlDate = new java.sql.Date(edate.getTime());
+                        if(name.equals(teamName.getText()) && coach.equals(headcoach.getText()) && board.equals(boardpresident.getText()) && sqlDate.equals(edate)) {
+                            teamok = true;
+                            verificationmessage.setText("Your team has been confirmed");
+                        }
+                        else {
+                            teamok = false;
+                            verificationmessage.setText("");
+                            JOptionPane.showMessageDialog(null, "This team is not available currently");
+                        }
+                    }
+                    else {
+                        teamok = false;
+                        verificationmessage.setText("");
+                        JOptionPane.showMessageDialog(null, "This team name is already taken, try a new one");
+                    }
+                }
             }
             catch (SQLException e) {
                 System.out.println("Result is not returned, teamVerification :: " + e);
@@ -124,60 +141,6 @@ public class Controller implements Initializable {
         }
     }
 
-    public void teamConfirm(ActionEvent event) throws IOException {
-        if(teamok==true && counter==0) {
-            boolean result = team.insertTeam(fin);
-
-            boolean pres=false, batres=false, wkres=false, bowlres=false;
-            int size = playerList.size();
-            for(int i=0; i<size; i++) {
-                FileInputStream f = playerInputStream.get(i);
-                Player player = playerList.get(i);
-                String role = player.getRole();
-                pres = player.insertPlayer(f);
-                if (pres) {
-                    Batsman batsman = batsmanList.get(i);
-                    batres = batsman.insertBatsman();
-                    if (batres) {
-                        Bowler bowler = bowlerList.get(i);
-                        bowlres = bowler.insertBowler();
-                        if (bowlres && (role=="Wicket-keeper" || role=="Wicketkeeper-batsman")) {
-                            Wicket_Keeper wicketKeeper = wicketKeepers.get(i);
-                            wkres = wicketKeeper.insertWicketKeeper();
-                        }
-                    }
-                }
-                pres = false;
-                batres = false;
-                wkres = false;
-                bowlres = false;
-            }
-            Parent root = FXMLLoader.load(getClass().getResource("/frontPage/frontPage.fxml"));
-            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            window.setScene(new Scene(root));
-            counter = numplayers;
-            window.show();
-        }
-        else {
-            JOptionPane.showMessageDialog(null, "Insert all the required info completely");
-        }
-    }
-
-    public void addPlayerList(Player player) {
-        playerList.add(player);
-    }
-    public void addBatsmanList(Batsman batsman) {
-        batsmanList.add(batsman);
-    }
-    public void addBowlerList(Bowler bowler) {
-        bowlerList.add(bowler);
-    }
-    public void addWicketkeeers(Wicket_Keeper wk) {
-        wicketKeepers.add(wk);
-    }
-    public void addplayerInputStream(FileInputStream f) {
-        playerInputStream.add(f);
-    }
 
     public void teamAddPlayer(ActionEvent event) {
         try {
@@ -195,13 +158,26 @@ public class Controller implements Initializable {
                 pc.setTeamEnrolController(this);
                 substage.show();
             } else if (teamok == false) {
-                JOptionPane.showMessageDialog(null, "Team has not been verified successfully");
+                JOptionPane.showMessageDialog(null, "Team has not been confirmed yet");
             } else {
                 JOptionPane.showMessageDialog(null, "No player is to be added");
             }
         }
         catch (IOException e) {
             System.out.println("Failed to load teamEnrol\\Controller :: " + e);
+        }
+    }
+
+    @FXML
+    public void teamEnrolDone(ActionEvent event) throws IOException {
+        if(teamok) {
+            Parent root = FXMLLoader.load(getClass().getResource("/frontPage/frontPage.fxml"));
+            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            window.setScene(new Scene(root));
+            window.show();
+        }
+        else {
+            JOptionPane.showMessageDialog(null, "Please confirm the team first");
         }
     }
 
@@ -227,7 +203,7 @@ public class Controller implements Initializable {
     }
 
     public void showNumberofPlayer() {
-        playernumbers.setText("Add exactly " + counter + " players");
+        playernumbers.setText("Add " + counter + " players (Optional)");
     }
 
     public void backtoFront(ActionEvent event) throws IOException {
@@ -247,6 +223,6 @@ public class Controller implements Initializable {
         filelist.add("*.jpeg");
         filelist.add("*.JPEG");
 
-        playernumbers.setText("Add exactly " + counter + " players");
+        playernumbers.setText("Add " + counter + " players (Optional)");
     }
 }

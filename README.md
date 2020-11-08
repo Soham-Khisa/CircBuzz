@@ -1,4 +1,4 @@
-<h1> CRICKBUZZ </h1> <br>
+<h1> CRICBUZZ </h1> <br>
 <p>
 This project is the Level-2/Term-2 project of Database
 System. My group mate <a href="https://github.com/SakiburReza" style="font-size: 30px">Sakibur Reza</a> and <a href="https://github.com/Soham-Khisa" style="font-size: 30px">I</a> are working under the supervision of

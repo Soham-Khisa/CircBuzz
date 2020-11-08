@@ -62,7 +62,7 @@ public class Wicket_Keeper {
                     "VALUES (" + playerID + ")";
             boolean v = dc.doUpate(insert);
             if(v) {
-                System.out.println("Batsman insert is successful");
+                System.out.println("Wicket-keeper insert is successful");
                 return true;
             }
             else {

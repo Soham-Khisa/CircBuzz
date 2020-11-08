@@ -6,6 +6,7 @@ package JavaCode;
 
 import Database.DatabaseConnection;
 
+import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -17,11 +18,11 @@ public class Bowler {
     private int balls_bowled;
     private int five_wickets_haul;
     private int ten_wickets_haul;
-    private String best_bowling;
+    private String best_bowling = null;
     private double bowling_strike_rate;
     private double bowling_economy_rate;
     private double bowling_avg;
-    private String bowling_style;
+    private String bowling_style = null;
 
     public int getPlayerID() {
         return playerID;
@@ -124,12 +125,25 @@ public class Bowler {
         this.bowling_style = bowling_style;
     }
 
+    public Bowler(int playerID) {
+        this.playerID = playerID;
+    }
+
     public boolean insertBowler() {
         try {
             DatabaseConnection dc = new DatabaseConnection();
-            String insert = "INSERT INTO CRICBUZZ.BOWLER (PLAYER_ID, BOWLING_STYLE) " +
+            String insert1 = "INSERT INTO CRICBUZZ.BOWLER (PLAYER_ID) " +
+                    "VALUES (" + playerID + ")";
+            String insert2 = "INSERT INTO CRICBUZZ.BOWLER (PLAYER_ID, BOWLING_STYLE) " +
                             "VALUES (" + playerID + "," + " '" + bowling_style + "')";
-            boolean v = dc.doUpate(insert);
+            boolean v = false;
+            if(bowling_style==null) {
+                v = dc.doUpate(insert1);
+            }
+            else {
+                v = dc.doUpate(insert2);
+            }
+
             if(v) {
                 System.out.println("Bowler insert is successful");
                 return true;

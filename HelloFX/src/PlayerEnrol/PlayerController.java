@@ -71,7 +71,7 @@ public class PlayerController implements Initializable {
 
             if (firstname.getText().isBlank() || lastname.getText().isBlank() || jersey.getText().isBlank() ||
                     birthplace.getText().isBlank() || dob.getValue() == null || role.getText().isBlank() ||
-                    batting.getText().isBlank() || bowling.getText().isBlank()) {
+                    batting.getText().isBlank()) {
 
                 JOptionPane.showMessageDialog(null, "Insert all the required info completely");
             } else if (team != null) {
@@ -88,18 +88,17 @@ public class PlayerController implements Initializable {
                 java.util.Date date = java.util.Date.from(dob.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
                 player = new Player(primarykey, firstname.getText(), lastname.getText(), birthplace.getText(), date, role.getText(), team.getTeam_ID(), jnum);
                 batsman = new Batsman(primarykey, batting.getText());
-                bowler = new Bowler(primarykey, bowling.getText());
+
+                if(bowling.getText().isBlank())
+                    bowler = new Bowler(primarykey);
+                else
+                    bowler = new Bowler(primarykey, bowling.getText());
                 wicketKeeper = new Wicket_Keeper(primarykey);
 
-                pres = true;
-                batres = true;
-                bowlres = true;
-
-                teamenrolctrl.addPlayerList(player);
-                teamenrolctrl.addBatsmanList(batsman);
-                teamenrolctrl.addBowlerList(bowler);
-                teamenrolctrl.addWicketkeeers(wicketKeeper);
-                teamenrolctrl.addplayerInputStream(fin);
+                pres = player.insertPlayer(fin);
+                batres = batsman.insertBatsman();
+                bowlres = bowler.insertBowler();
+                wicketKeeper.insertWicketKeeper();
 
             } else {
                 JOptionPane.showMessageDialog(null, "Failed to insert player. A team must be assigned for the player at first.");

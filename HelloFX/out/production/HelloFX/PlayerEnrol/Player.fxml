@@ -69,11 +69,6 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="342.0" layoutY="339.0" text="*" textFill="#ee0a0a">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
       <Label layoutX="40.0" layoutY="56.0" prefHeight="17.0" prefWidth="122.0" text="* marks are required" textFill="#f50707" />
    </children>
 </AnchorPane>
