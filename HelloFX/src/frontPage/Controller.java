@@ -68,8 +68,8 @@ public class Controller<initialize> {
                 query = "INSERT INTO CRICBUZZ.UMPIRE (UMPIRE_ID, FIRST_NAME, LAST_NAME, COUNTRY, DOB) " +
                         "VALUES (" + primarkey + ", '" + umpireFirstName.getText() + "', '" + umpireLastName.getText() + "', '" + umpireCountry.getText() + "', TO_DATE('" + date + "', 'dd/MM/yyyy'))";
                 Boolean verdict = dc.doUpate(query);
-                if (verdict) umpirelabel.setText("Stadium enrollment is successful");
-                else umpirelabel.setText("Stadium enrollment failed. Try again");
+                if (verdict) umpirelabel.setText("Umpire enrollment is successful");
+                else umpirelabel.setText("Umpire enrollment failed. Try again");
             }
             else {
                 JOptionPane.showMessageDialog(null, "Umpire enrollment failed");
