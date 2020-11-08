@@ -5,7 +5,6 @@ System. My group mate <a href="https://github.com/SakiburReza" style="font-size:
 <a href="https://cse.buet.ac.bd/faculty/facdetail.php?id=shehab" style="font-size: 30px">Shehab Sarar Ahmed</a>, Lecturer, <a href="https://www.buet.ac.bd/web/" style="font-size: 30px">BUET</a> for this project.
 </p>
 <br>
-<<<<<<< HEAD
 <p>
 In this application we intend to make an
 application that shows all the history
@@ -21,23 +20,12 @@ for networking that means this application will be completely
 offline. For this project we are using oracle database and
 its ojdbc6.jar library with c3p0 connection
 pooling libraries.
-=======
-<br>
-<p>
-In this project we intend to make an
-application that shows all the history
-and the latest updates of cricket matches.
->>>>>>> faf1fff2c0b45f1dd7d3047f7ed6995cf89b707b
-</p>
-<hr>
 
+<hr>
 <strong> DATA BASE: </strong> Oracle 11g<br>
 <strong> Graphical toolkit: </strong> JavaFx <br>
-
 <hr>
-
 <strong> <em> The project is still under development </em> </strong>
-
 <hr>
 
 <p>
