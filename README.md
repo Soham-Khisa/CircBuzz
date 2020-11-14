@@ -24,6 +24,7 @@ pooling libraries.
 <hr>
 <strong> DATA BASE: </strong> Oracle 11g<br>
 <strong> Graphical toolkit: </strong> JavaFx <br>
+<strong> Connection Pool Libraries: </strong> c3p0 <br>
 <hr>
 <strong> <em> The project is still under development </em> </strong>
 <hr>

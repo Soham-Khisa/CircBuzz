@@ -12,6 +12,8 @@ public class Match_type {
         this.match_type_ID = match_type_ID;
         this.match_title = match_title;
     }
+    public Match_type() {
+    }
 
     public int getMatch_type_ID() {
         return match_type_ID;

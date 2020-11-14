@@ -1,4 +1,5 @@
 /*
+ * Author Soham Khisa
  * Author MD. Sakibur Reza
  */
 
@@ -7,7 +8,6 @@ package teamEnrol;
 import Database.DatabaseConnection;
 import JavaCode.*;
 import PlayerEnrol.PlayerController;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,28 +15,23 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
-import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -45,6 +40,8 @@ public class Controller implements Initializable {
 
     @FXML
     private TextField teamName;
+    @FXML
+    private TextField teamshort;
     @FXML
     private TextField headcoach;
     @FXML
@@ -56,7 +53,11 @@ public class Controller implements Initializable {
     @FXML
     private Label playernumbers;
     @FXML
+    private Button imageChooser;
+    @FXML
     private ImageView teamlogo;
+    @FXML
+    private Button confirmteam;
 
     private List<String> filelist;
     private final int numplayers = 11;
@@ -78,7 +79,7 @@ public class Controller implements Initializable {
             try {
                 if(!rs.isBeforeFirst()) {
                     verificationmessage.setText("Team Name is currently available.");
-                    if(headcoach.getText().isBlank() || boardpresident.getText().isBlank() || establishdate.getValue() == null)
+                    if(teamshort.getText().isBlank() || headcoach.getText().isBlank() || boardpresident.getText().isBlank() || establishdate.getValue() == null)
                         JOptionPane.showMessageDialog(null, "insert all the required fields");
                     else {
                         teamok = true;
@@ -94,10 +95,18 @@ public class Controller implements Initializable {
                         java.util.Date date = java.util.Date.from(establishdate.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
 
 
-                        team = new Team(primarykey, teamName.getText(), date, headcoach.getText(), boardpresident.getText());
+                        team = new Team(primarykey, teamName.getText(), teamshort.getText(), date, headcoach.getText(), boardpresident.getText());
                         team.insertTeam(fin);
                         verificationmessage.setText("Your team is confirmed");
                         showNumberofPlayer();
+
+                        teamName.setDisable(true);
+                        headcoach.setDisable(true);
+                        boardpresident.setDisable(true);
+                        establishdate.setDisable(true);
+                        imageChooser.setDisable(true);
+                        confirmteam.setDisable(true);
+                        teamshort.setDisable(true);
                     }
                 }
                 else if(headcoach.getText().isBlank() || boardpresident.getText().isBlank() || establishdate.getValue() == null) {

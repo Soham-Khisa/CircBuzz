@@ -1,5 +1,7 @@
 package Database;
 
+import JavaCode.Match_type;
+import JavaCode.Stadium;
 import JavaCode.Team;
 
 import java.sql.*;
@@ -70,7 +72,36 @@ public class DatabaseConnection{
         return teamList;
     }
 
-   public Connection cricbuzzConnection() {
+    public List<Stadium> getStadium() throws SQLException {
+        String query="SELECT DISTINCT STADIUM_NAME FROM STADIUM";
+        statement=connection.createStatement();
+        ResultSet rs=statement.executeQuery(query);
+        List<Stadium> stadiumList= new ArrayList<Stadium>();
+        while(rs.next()){
+            String stadium_name= rs.getString("STADIUM_NAME");
+            Stadium stadium=new Stadium();
+            stadium.setStadium_name(stadium_name);
+            stadiumList.add(stadium);
+        }
+        return stadiumList;
+    }
+
+    public List<Match_type> getMatchType() throws SQLException {
+        String query= "SELECT DISTINCT MATCH_TITLE FROM MATCH_TYPE";
+        statement=connection.createStatement();
+        ResultSet rs = statement.executeQuery(query);
+        List<Match_type> match_typeList= new ArrayList<>();
+        while(rs.next()){
+            Match_type match_type= new Match_type();
+            String match_type_name= rs.getString("MATCH_TITLE");
+            match_type.setMatch_title(match_type_name);
+            match_typeList.add(match_type);
+        }
+        return match_typeList;
+
+    }
+
+    public Connection cricbuzzConnection() {
        return connection;
    }
 

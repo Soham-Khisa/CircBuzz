@@ -25,12 +25,13 @@ public class Team {
     private int draw;
     private String head_coach;
     private String board_president;
+    private String team_sf;
     private PreparedStatement ps;
 
-    private String insert1 = "INSERT INTO CRICBUZZ.TEAM (TEAM_ID, TEAM_NAME, ESTABLISH_DATE, TEAM_LOGO, HEAD_COACH, BOARD_PRESIDENT) "
+    private String insert1 = "INSERT INTO CRICBUZZ.TEAM (TEAM_ID, TEAM_NAME, TEAM_SF, ESTABLISH_DATE, TEAM_LOGO, HEAD_COACH, BOARD_PRESIDENT) "
+            + "VALUES(?, ?, ?, ?, ?, ?, ?)";
+    private String insert2 = "INSERT INTO CRICBUZZ.TEAM (TEAM_ID, TEAM_NAME, TEAM_SF, ESTABLISH_DATE, HEAD_COACH, BOARD_PRESIDENT) "
             + "VALUES(?, ?, ?, ?, ?, ?)";
-    private String insert2 = "INSERT INTO CRICBUZZ.TEAM (TEAM_ID, TEAM_NAME, ESTABLISH_DATE, HEAD_COACH, BOARD_PRESIDENT) "
-            + "VALUES(?, ?, ?, ?, ?)";
 
     @Override
     public String toString() {
@@ -119,9 +120,10 @@ public class Team {
         return board_president;
     }
 
-    public Team(int team_ID, String team_Name, Date established_date, String head_coach, String board_president) {
+    public Team(int team_ID, String team_Name, String team_sf, Date established_date, String head_coach, String board_president) {
         this.team_ID = team_ID;
         this.team_Name = team_Name;
+        this.team_sf = team_sf;
         this.established_date = established_date;
         this.head_coach = head_coach;
         this.board_president = board_president;
@@ -143,9 +145,10 @@ public class Team {
 
                 ps.setInt(1, team_ID);
                 ps.setString(2, team_Name);
-                ps.setDate(3, sqlDate);
-                ps.setString(4, head_coach);
-                ps.setString(5, board_president);
+                ps.setString(3, team_sf);
+                ps.setDate(4, sqlDate);
+                ps.setString(5, head_coach);
+                ps.setString(6, board_president);
                 System.out.println("Team input successful");
             } else {
                 System.out.println("With Team Logo");
@@ -153,10 +156,11 @@ public class Team {
 
                 ps.setInt(1, team_ID);
                 ps.setString(2, team_Name);
-                ps.setDate(3, sqlDate);
-                ps.setBinaryStream(4, fin, fin.available());
-                ps.setString(5, head_coach);
-                ps.setString(6, board_president);
+                ps.setString(3, team_sf);
+                ps.setDate(4, sqlDate);
+                ps.setBinaryStream(5, fin, fin.available());
+                ps.setString(6, head_coach);
+                ps.setString(7, board_president);
                 System.out.println("Team input successful");
             }
             int v = ps.executeUpdate();
