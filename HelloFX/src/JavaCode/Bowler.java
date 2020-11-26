@@ -130,36 +130,30 @@ public class Bowler {
     }
 
     public boolean insertBowler() {
-        try {
-            DatabaseConnection dc = new DatabaseConnection();
-            String insert1 = "INSERT INTO CRICBUZZ.BOWLER (PLAYER_ID) " +
-                    "VALUES (" + playerID + ")";
-            String insert2 = "INSERT INTO CRICBUZZ.BOWLER (PLAYER_ID, BOWLING_STYLE) " +
-                            "VALUES (" + playerID + "," + " '" + bowling_style + "')";
-            boolean v = false;
-            if(bowling_style==null) {
-                v = dc.doUpate(insert1);
-            }
-            else {
-                v = dc.doUpate(insert2);
-            }
-
-            if(v) {
-                System.out.println("Bowler insert is successful");
-                return true;
-            }
-            else {
-                System.out.println("Bowling insert unsuccessful");
-                String del1 = "DELETE FROM CRICBUZZ.PLAYER WHERE PLAYER_ID = " + playerID;
-                String del2 = "DELETE FROM CRICBUZZ.BATSMAN WHERE PLAYER_ID = " + playerID;
-                dc.doUpate(del1);
-                dc.doUpate(del2);
-                return false;
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Failed to create statement Javacode\\Bowler :: " + e);
+        DatabaseConnection dc = new DatabaseConnection();
+        String insert1 = "INSERT INTO CRICBUZZ.BOWLER (PLAYER_ID) " +
+                "VALUES (" + playerID + ")";
+        String insert2 = "INSERT INTO CRICBUZZ.BOWLER (PLAYER_ID, BOWLING_STYLE) " +
+                "VALUES (" + playerID + "," + " '" + bowling_style + "')";
+        boolean v = false;
+        if(bowling_style==null) {
+            v = dc.doUpdate(insert1);
         }
-        return false;
+        else {
+            v = dc.doUpdate(insert2);
+        }
+
+        if(v) {
+            System.out.println("Bowler insert is successful");
+            return true;
+        }
+        else {
+            System.out.println("Bowling insert unsuccessful");
+            String del1 = "DELETE FROM CRICBUZZ.PLAYER WHERE PLAYER_ID = " + playerID;
+            String del2 = "DELETE FROM CRICBUZZ.BATSMAN WHERE PLAYER_ID = " + playerID;
+            dc.doUpdate(del1);
+            dc.doUpdate(del2);
+            return false;
+        }
     }
 }

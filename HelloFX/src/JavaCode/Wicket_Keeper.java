@@ -56,28 +56,22 @@ public class Wicket_Keeper {
     }
 
     public boolean insertWicketKeeper() {
-        try {
-            DatabaseConnection dc = new DatabaseConnection();
-            String insert = "INSERT INTO CRICBUZZ.WICKET_KEEPER (PLAYER_ID) " +
-                    "VALUES (" + playerID + ")";
-            boolean v = dc.doUpate(insert);
-            if(v) {
-                System.out.println("Wicket-keeper insert is successful");
-                return true;
-            }
-            else {
-                String del1 = "DELETE FROM CRICBUZZ.PLAYER WHERE PLAYER_ID = " + playerID;
-                String del2 = "DELETE FROM CRICBUZZ.BATSMAN WHERE PLAYER_ID = " + playerID;
-                String del3 = "DELETE FROM CRICBUZZ.BOWLER WHERE PLAYER_ID = " + playerID;
-                dc.doUpate(del1);
-                dc.doUpate(del2);
-                dc.doUpate(del3);
-                return false;
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Failed to create statement Javacode\\Bowler :: " + e);
+        DatabaseConnection dc = new DatabaseConnection();
+        String insert = "INSERT INTO CRICBUZZ.WICKET_KEEPER (PLAYER_ID) " +
+                "VALUES (" + playerID + ")";
+        boolean v = dc.doUpdate(insert);
+        if(v) {
+            System.out.println("Wicket-keeper insert is successful");
+            return true;
         }
-        return false;
+        else {
+            String del1 = "DELETE FROM CRICBUZZ.PLAYER WHERE PLAYER_ID = " + playerID;
+            String del2 = "DELETE FROM CRICBUZZ.BATSMAN WHERE PLAYER_ID = " + playerID;
+            String del3 = "DELETE FROM CRICBUZZ.BOWLER WHERE PLAYER_ID = " + playerID;
+            dc.doUpdate(del1);
+            dc.doUpdate(del2);
+            dc.doUpdate(del3);
+            return false;
+        }
     }
 }

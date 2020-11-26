@@ -12,6 +12,7 @@ import java.io.PipedReader;
 import java.lang.module.FindException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
@@ -27,13 +28,12 @@ public class Player {
     private int jersey_No;
 
     private PreparedStatement ps = null;
-    private String insert1 = "INSERT INTO CRICBUZZ.PLAYER (PLAYER_ID, FIRST_NAME, LAST_NAME, BORN, DOB, ROLE, TEAM_ID, JERSEY) "
+    private String insert1 = "INSERT INTO CRICBUZZ.PLAYER (FIRST_NAME, LAST_NAME, BORN, DOB, ROLE, TEAM_ID, JERSEY) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private String insert2 = "INSERT INTO CRICBUZZ.PLAYER (FIRST_NAME, LAST_NAME, BORN, DOB, ROLE, TEAM_ID, JERSEY, PROFILE_PIC) "
             + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    private String insert2 = "INSERT INTO CRICBUZZ.PLAYER (PLAYER_ID, FIRST_NAME, LAST_NAME, BORN, DOB, ROLE, PROFILE_PIC, TEAM_ID, JERSEY) "
-            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    public Player(int player_ID, String first_Name, String last_Name, String birthplace, Date dob, String role, int team_ID, int jersey_No) {
-        this.player_ID = player_ID;
+    public Player(String first_Name, String last_Name, String birthplace, Date dob, String role, int team_ID, int jersey_No) {
         this.first_Name = first_Name;
         this.last_Name = last_Name;
         this.birthplace = birthplace;
@@ -119,37 +119,35 @@ public class Player {
         try {
             DatabaseConnection dc = new DatabaseConnection();
             java.sql.Date sqlDate = new java.sql.Date(dob.getTime());
+            String generatedColumns[] = { "PLAYER_ID" };
             Connection connection = dc.cricbuzzConnection();
             if (fin == null) {
-                ps = connection.prepareStatement(insert1);
-
-                ps.setInt(1, player_ID);
-                ps.setString(2, first_Name);
-                ps.setString(3, last_Name);
-                ps.setString(4, birthplace);
-                ps.setDate(5, sqlDate);
-                ps.setString(6, role);
-                ps.setInt(7, team_ID);
-                ps.setInt(8, jersey_No);
-                System.out.println("Player input successful");
-
+                ps = connection.prepareStatement(insert1, generatedColumns);
             } else {
-                ps = connection.prepareStatement(insert2);
-
-                ps.setInt(1, player_ID);
-                ps.setString(2, first_Name);
-                ps.setString(3, last_Name);
-                ps.setString(4, birthplace);
-                ps.setDate(5, sqlDate);
-                ps.setString(6, role);
-                ps.setBinaryStream(7, fin, fin.available());
-                ps.setInt(8, team_ID);
-                ps.setInt(9, jersey_No);
-                System.out.println("Player input successful");
+                ps = connection.prepareStatement(insert2, generatedColumns);
             }
+            ps.setString(1, first_Name);
+            ps.setString(2, last_Name);
+            ps.setString(3, birthplace);
+            ps.setDate(4, sqlDate);
+            ps.setString(5, role);
+            ps.setInt(6, team_ID);
+            ps.setInt(7, jersey_No);
+            if(fin != null)
+                ps.setBinaryStream(8, fin, fin.available());
+            System.out.println("Player input successful");
             int v = ps.executeUpdate();
-            System.out.println("player successful");
-            if(v > 0)   return  true;
+            if(v > 0) {
+                try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        player_ID = generatedKeys.getInt(1);
+                    }
+                    else {
+                        throw new SQLException("Creating teamId failed, no ID obtained.");
+                    }
+                }
+                return true;
+            }
             else    return false;
 
         } catch (SQLException e) {

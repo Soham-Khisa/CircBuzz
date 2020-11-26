@@ -102,24 +102,18 @@ public class Batsman {
     }
 
     public boolean insertBatsman() {
-        try {
-            DatabaseConnection dc = new DatabaseConnection();
-            String insert = "INSERT INTO CRICBUZZ.BATSMAN (PLAYER_ID, BATTING_STYLE) " +
-                    "VALUES (" + player_ID + "," + " '" + batting_style + "')";
-            boolean v = dc.doUpate(insert);
-            if(v) {
-                System.out.println("Batsman insert is successful");
-                return true;
-            }
-            else {
-                String del = "DELETE FROM CRICBUZZ.PLAYER WHERE PLAYER_ID = " + player_ID;
-                dc.doUpate(del);
-                return false;
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Failed to create statement Javacode\\Bowler :: " + e);
+        DatabaseConnection dc = new DatabaseConnection();
+        String insert = "INSERT INTO CRICBUZZ.BATSMAN (PLAYER_ID, BATTING_STYLE) " +
+                "VALUES (" + player_ID + "," + " '" + batting_style + "')";
+        boolean v = dc.doUpdate(insert);
+        if(v) {
+            System.out.println("Batsman insert is successful");
+            return true;
         }
-        return false;
+        else {
+            String del = "DELETE FROM CRICBUZZ.PLAYER WHERE PLAYER_ID = " + player_ID;
+            dc.doUpdate(del);
+            return false;
+        }
     }
 }

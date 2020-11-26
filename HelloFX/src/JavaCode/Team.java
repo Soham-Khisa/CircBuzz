@@ -5,14 +5,13 @@
 package JavaCode;
 
 import Database.DatabaseConnection;
+import com.sun.glass.ui.EventLoop;
 import javafx.animation.ScaleTransition;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.io.InputStream;
+import java.sql.*;
 import java.util.Date;
 
 public class Team {
@@ -28,10 +27,10 @@ public class Team {
     private String team_sf;
     private PreparedStatement ps;
 
-    private String insert1 = "INSERT INTO CRICBUZZ.TEAM (TEAM_ID, TEAM_NAME, TEAM_SF, ESTABLISH_DATE, TEAM_LOGO, HEAD_COACH, BOARD_PRESIDENT) "
-            + "VALUES(?, ?, ?, ?, ?, ?, ?)";
-    private String insert2 = "INSERT INTO CRICBUZZ.TEAM (TEAM_ID, TEAM_NAME, TEAM_SF, ESTABLISH_DATE, HEAD_COACH, BOARD_PRESIDENT) "
+    private String insert1 = "INSERT INTO CRICBUZZ.TEAM (TEAM_NAME, TEAM_SF, ESTABLISH_DATE, HEAD_COACH, BOARD_PRESIDENT,  TEAM_LOGO) "
             + "VALUES(?, ?, ?, ?, ?, ?)";
+    private String insert2 = "INSERT INTO CRICBUZZ.TEAM (TEAM_NAME, TEAM_SF, ESTABLISH_DATE, HEAD_COACH, BOARD_PRESIDENT) "
+            + "VALUES(?, ?, ?, ?, ?)";
 
     @Override
     public String toString() {
@@ -120,8 +119,7 @@ public class Team {
         return board_president;
     }
 
-    public Team(int team_ID, String team_Name, String team_sf, Date established_date, String head_coach, String board_president) {
-        this.team_ID = team_ID;
+    public Team(String team_Name, String team_sf, Date established_date, String head_coach, String board_president) {
         this.team_Name = team_Name;
         this.team_sf = team_sf;
         this.established_date = established_date;
@@ -139,33 +137,35 @@ public class Team {
             //java.util.date -> java.sql.date
             java.sql.Date sqlDate = new java.sql.Date(established_date.getTime());
             Connection connection = dc.cricbuzzConnection();
+            String generatedColumns[] = { "TEAM_ID" };
             if (fin == null) {
                 System.out.println("Without Team Logo");
-                ps = connection.prepareStatement(insert2);
-
-                ps.setInt(1, team_ID);
-                ps.setString(2, team_Name);
-                ps.setString(3, team_sf);
-                ps.setDate(4, sqlDate);
-                ps.setString(5, head_coach);
-                ps.setString(6, board_president);
-                System.out.println("Team input successful");
+                ps = connection.prepareStatement(insert2, generatedColumns);
             } else {
                 System.out.println("With Team Logo");
-                ps = connection.prepareStatement(insert1);
-
-                ps.setInt(1, team_ID);
-                ps.setString(2, team_Name);
-                ps.setString(3, team_sf);
-                ps.setDate(4, sqlDate);
-                ps.setBinaryStream(5, fin, fin.available());
-                ps.setString(6, head_coach);
-                ps.setString(7, board_president);
-                System.out.println("Team input successful");
+                ps = connection.prepareStatement(insert1, generatedColumns);
             }
+            ps.setString(1, team_Name);
+            ps.setString(2, team_sf);
+            ps.setDate(3, sqlDate);
+            ps.setString(4, head_coach);
+            ps.setString(5, board_president);
+            if(fin!=null)
+                ps.setBinaryStream(6, fin, fin.available());
+            System.out.println("Team input successful");
             int v = ps.executeUpdate();
-            if(v > 0)
+
+            if(v > 0) {
+                try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        team_ID = generatedKeys.getInt(1);
+                    }
+                    else {
+                        throw new SQLException("Creating teamId failed, no ID obtained.");
+                    }
+                }
                 return true;
+            }
             else
                 return false;
         }

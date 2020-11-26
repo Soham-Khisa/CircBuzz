@@ -11,7 +11,7 @@ import java.util.List;
 public class DatabaseConnection{
    private Statement statement;
    private Connection connection;
-
+   //private PreparedStatement preparedStatement;
 
    public DatabaseConnection() {
        try {
@@ -22,6 +22,7 @@ public class DatabaseConnection{
            System.out.println("Failed to establish connection :: " + e);
        }
    }
+
 
    public ResultSet getQueryResult (String query) {
        ResultSet rs = null;
@@ -34,13 +35,38 @@ public class DatabaseConnection{
        return rs;
    }
 
-   public boolean doUpate(String insert_query) throws SQLException {
-       int v = statement.executeUpdate(insert_query);
+   public boolean doUpdate(String insert_query) {
+       int v = 0;
+       try {
+           v = statement.executeUpdate(insert_query);
+       } catch (SQLException e) {
+           System.out.println("Failed to execute query doUpdate\\DatabaseConnection :: " + e);
+       }
        if(v>0)  return true;
        else return false;
    }
 
-    public void insert(String insert_query) throws SQLException {
+   public boolean doUpdate(String query, String Columns[]) {
+       int v = 0;
+       try {
+           v = statement.executeUpdate(query, Columns);
+       } catch (SQLException e) {
+           System.out.println("Failed to execute query doUpdate(query, col)\\DatabaseConnection :: " + e);
+       }
+       if(v>0)  return true;
+       else return false;
+   }
+
+   public ResultSet generatedKeys() {
+       try {
+           return statement.getGeneratedKeys();
+       } catch (SQLException e) {
+           System.out.println("Failed to return generated keys generatedKeys()\\DatabaseConnection :: " + e);
+       }
+       return null;
+   }
+
+   public void insert(String insert_query) throws SQLException {
         statement.executeUpdate(insert_query);
     }
 

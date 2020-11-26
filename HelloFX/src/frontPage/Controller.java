@@ -53,29 +53,30 @@ public class Controller<initialize> {
     }
 
     public void umpireEnrolAction(ActionEvent event) {
-        try {
-            if (umpireFirstName.getText() != null && umpireLastName.getText() != null && umpireCountry.getText() != null && umpire_dob.getValue() != null) {
-                DatabaseConnection dc = new DatabaseConnection();
+        if (umpireFirstName.getText() != null && umpireLastName.getText() != null && umpireCountry.getText() != null && umpire_dob.getValue() != null) {
+            DatabaseConnection dc = new DatabaseConnection();
 
-                int primarkey = 1;
-                String query = "SELECT MAX(UMPIRE_ID) AS umpid FROM CRICBUZZ.UMPIRE";
-                ResultSet rs = dc.getQueryResult(query);
-                if (rs.next())
-                    primarkey = rs.getInt("umpid") + 1;
+            String date = umpire_dob.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
-                String date = umpire_dob.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-
-                query = "INSERT INTO CRICBUZZ.UMPIRE (UMPIRE_ID, FIRST_NAME, LAST_NAME, COUNTRY, DOB) " +
-                        "VALUES (" + primarkey + ", '" + umpireFirstName.getText() + "', '" + umpireLastName.getText() + "', '" + umpireCountry.getText() + "', TO_DATE('" + date + "', 'dd/MM/yyyy'))";
-                Boolean verdict = dc.doUpate(query);
-                if (verdict) umpirelabel.setText("Umpire enrollment is successful");
-                else umpirelabel.setText("Umpire enrollment failed. Try again");
+            String query = "INSERT INTO CRICBUZZ.UMPIRE (FIRST_NAME, LAST_NAME, COUNTRY, DOB) " +
+                    "VALUES ('" + umpireFirstName.getText() + "', '" + umpireLastName.getText() + "', '" + umpireCountry.getText() + "', TO_DATE('" + date + "', 'dd/MM/yyyy'))";
+            String UmpId[] = {"UMPIRE_ID"};
+            Boolean verdict = dc.doUpdate(query, UmpId);
+            if (verdict) {
+                umpirelabel.setText("Umpire enrollment is successful");
+                umpireFirstName.clear();
+                umpireLastName.clear();
+                umpireCountry.clear();
+                umpire_dob.getEditor().clear();
+                umpire_dob.setValue(null);
             }
             else {
-                JOptionPane.showMessageDialog(null, "Umpire enrollment failed");
+                umpirelabel.setVisible(false);
+                JOptionPane.showMessageDialog(null,"Umpire enrollment failed. Try again");
             }
-        } catch (SQLException e) {
-            System.out.println("Failed to return result umpireEnrolAction\\frontPage\\Controller :: " + e);
+        }
+        else {
+            JOptionPane.showMessageDialog(null, "Umpire enrollment failed");
         }
     }
 
@@ -88,36 +89,33 @@ public class Controller<initialize> {
 
 
     public void enrolStadiumAction(ActionEvent event) throws SQLException {
-        try {
-            if (stadiumName.getText() != null && stadiumLocation.getText() != null && stadiumCountry.getText() != null && seatNoStadium.getText() != null) {
-                int seatNum = Integer.parseInt(seatNoStadium.getText());
-                DatabaseConnection dc = new DatabaseConnection();
+        if (stadiumName.getText() != null && stadiumLocation.getText() != null && stadiumCountry.getText() != null && seatNoStadium.getText() != null) {
+            int seatNum = Integer.parseInt(seatNoStadium.getText());
+            DatabaseConnection dc = new DatabaseConnection();
 
-                int primarkey = 1;
-                String query = "SELECT MAX(STADIUM_ID) AS stdmid FROM CRICBUZZ.STADIUM";
-                ResultSet rs = dc.getQueryResult(query);
-                if (rs.next())
-                    primarkey = rs.getInt("stdmid") + 1;
-
-                query = "INSERT INTO CRICBUZZ.STADIUM (STADIUM_ID, STADIUM_NAME, LOCATION, COUNTRY, CAPACITY) " +
-                        "VALUES (" + primarkey + ", '" + stadiumName.getText() + "', '" + stadiumLocation.getText() + "', '" + stadiumCountry.getText() + "', " + seatNum + ")";
-                Boolean verdict = dc.doUpate(query);
-                if (verdict) stadiumlabel.setText("Stadium enrollment is successful");
-                else stadiumlabel.setText("Stadium enrollment failed. Try again");
-            } else {
-                JOptionPane.showMessageDialog(null, "Insert all the fields");
+            String query = "INSERT INTO CRICBUZZ.STADIUM (STADIUM_NAME, LOCATION, COUNTRY, CAPACITY) " +
+                    "VALUES ('" + stadiumName.getText() + "', '" + stadiumLocation.getText() + "', '" + stadiumCountry.getText() + "', " + seatNum + ")";
+            String stdmId[] = {"STADIUM_ID"};
+            Boolean verdict = dc.doUpdate(query, stdmId);
+            if (verdict) {
+                stadiumlabel.setText("Stadium enrollment is successful");
+                stadiumName.clear();
+                stadiumLocation.clear();
+                stadiumCountry.clear();
+                seatNoStadium.clear();
             }
-        }
-        catch (SQLException e) {
-            System.out.println("Failed to return result enrolStadiumAction :: " + e);
-        }
-        catch (NumberFormatException e) {
+            else {
+                stadiumlabel.setVisible(false);
+                JOptionPane.showMessageDialog(null,"Stadium enrollment failed. Try again");
+            }
+        } else {
             JOptionPane.showMessageDialog(null, "Insert all the fields");
         }
     }
 
     public void enrolAnUmpireAction(ActionEvent event) {
         if(!umpireFirstName.isVisible() && !umpireLastName.isVisible() && !umpireCountry.isVisible() && !umpire_dob.isVisible() && !enrolUmpire.isVisible()) {
+            umpirelabel.setVisible(true);
             umpireFirstName.setVisible(true);
             umpireCountry.setVisible(true);
             umpireLastName.setVisible(true);
@@ -125,6 +123,7 @@ public class Controller<initialize> {
             enrolUmpire.setVisible(true);
         }
         else {
+            umpirelabel.setVisible(false);
             umpireFirstName.setVisible(false);
             umpireCountry.setVisible(false);
             umpireLastName.setVisible(false);
@@ -147,8 +146,10 @@ public class Controller<initialize> {
             stadiumCountry.setVisible(false);
             seatNoStadium.setVisible(false);
             enrolStadium.setVisible(false);
+            stadiumlabel.setVisible(false);
         }
         else {
+            stadiumlabel.setVisible(true);
             stadiumName.setVisible(true);
             stadiumLocation.setVisible(true);
             stadiumCountry.setVisible(true);

@@ -13,12 +13,16 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import JavaCode.Team;
 import javafx.util.Callback;
 
 import javax.swing.*;
+import javax.xml.transform.Result;
+import java.awt.*;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -46,7 +50,7 @@ public class Controller {
     ObservableList<FixtureTable> oblist = FXCollections.observableArrayList();
     DatabaseConnection dc;
     String[] allTeam;
-    int tourID,t20=0,test=0,odi=0;
+    int tourID=-1,t20=0,test=0,odi=0;
     int t20Ordering=0,testOrdering=0,odiOrdering=0;
     @FXML
     public void initialize() throws SQLException {
@@ -121,14 +125,13 @@ public class Controller {
 
 
     public void fixtureDoneAction(ActionEvent event) throws IOException, SQLException {
-        if(datePickerID.getValue()!=null && gameFormatID.getValue()!=null && stadiumID.getValue()!=null && gameTimeID.getText()!=null){
+        if(tourID!=-1 && datePickerID.getValue()!=null && gameFormatID.getValue()!=null && stadiumID.getValue()!=null && gameTimeID.getText()!=null){
 
             String date = datePickerID.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             String matchType = gameFormatID.getValue();
             String stadium = stadiumID.getValue();
             String time = gameTimeID.getText();
 
-            int fixture_id = 1;
             int order=1;
             int matchTypeID=1;
             int stadiumId=1;
@@ -181,43 +184,27 @@ public class Controller {
                 return;
             }
 
-            String fixtureIdQuery="SELECT MAX(FIXTURE_ID) as MaxFixID FROM CRICBUZZ.FIXTURE";
-            ResultSet rs= dc.getQueryResult(fixtureIdQuery);
-            try {
-                if(rs.next()) fixture_id=rs.getInt("MaxFixID")+1;
-
-            } catch (SQLException e) {
-                System.out.println("Exception in fixture ID query::"+e);;
-            }
-            System.out.println("Here I am - 1");
-
+            dc = new DatabaseConnection();
             String stadiumIDquery="SELECT STADIUM_ID FROM CRICBUZZ.STADIUM " +
                     "WHERE STADIUM_NAME = " + "'" + stadium + "'";
-            ResultSet rs2 = dc.getQueryResult(stadiumIDquery);
-            if(rs2.next()){
-                stadiumId= rs2.getInt("STADIUM_ID");
+            ResultSet rs = dc.getQueryResult(stadiumIDquery);
+            if(rs.next()){
+                stadiumId= rs.getInt("STADIUM_ID");
             }
-
-            System.out.println("Here I am - 2");
 
             String matchTypeIDquery="SELECT MATCH_TYPE_ID FROM MATCH_TYPE " +
                     "WHERE MATCH_TITLE =" + "'" + matchType + "'";
-            ResultSet rs3= dc.getQueryResult(matchTypeIDquery);
-            if(rs3.next()) {
-                matchTypeID = rs3.getInt("MATCH_TYPE_ID");
+            rs= dc.getQueryResult(matchTypeIDquery);
+            if(rs.next()) {
+                matchTypeID = rs.getInt("MATCH_TYPE_ID");
             }
             System.out.println("Here I am - 3");
-            String insert_query="INSERT INTO CRICBUZZ.FIXTURE(FIXTURE_ID,TOUR_ID,DATETIME,STADIUM_ID,MATCH_TYPE_ID,ORDERING)\n" +
-                    "VALUES("+fixture_id+","+tourID+",TO_DATE('"+date+" "+time+"','DD/MM/YYYY HH24:MI:SS'),"+stadiumId+","+matchTypeID+","+order+")";
+            String insert_query="INSERT INTO CRICBUZZ.FIXTURE(TOUR_ID, DATETIME, STADIUM_ID, MATCH_TYPE_ID, ORDERING)\n" +
+                    "VALUES(" + tourID +",TO_DATE('"+date+" "+time+"', 'DD/MM/YYYY HH24:MI:SS')," + stadiumId + "," + matchTypeID + "," + order + ")";
 
+            String fixId[] = {"FIXTURE_ID"};
             System.out.println("Here I am - 4");
-            try{
-                dc.insert(insert_query);
-            }
-            catch (SQLException e){
-                System.out.println("Insert Fixture:"+e);
-            }
-            System.out.println("Here I am - 5");
+            dc.doUpdate(insert_query, fixId);
 
             gameTimeID.clear();
             datePickerID.getEditor().clear();
@@ -236,6 +223,8 @@ public class Controller {
 
             System.out.println("Here I am - 7");
 
+            dc.closeConnection();
+            dc = new DatabaseConnection();
             String hostTeamSFquery="SELECT TEAM_SF FROM CRICBUZZ.TEAM WHERE TEAM_NAME="+"'"+hostTeamName.getValue()+"'";
             try (ResultSet rs4 = dc.getQueryResult(hostTeamSFquery)) {
                 if (rs4.next()) hostTeamSF = rs4.getString("TEAM_SF");
@@ -253,6 +242,7 @@ public class Controller {
             FixtureTable ft= new FixtureTable(date,matchD,time);
             oblist.add(ft);
         }
+        else if(tourID==-1) JOptionPane.showMessageDialog(null, "First Confirm tour");
         else JOptionPane.showMessageDialog(null, "Insert all the values");
     }
 
@@ -267,16 +257,10 @@ public class Controller {
                 test = Integer.parseInt(NoOfTestGameID.getText());
                 odi = Integer.parseInt(NoOfODIGameID.getText());
 
-                String touridquery = "SELECT MAX(TOUR_ID) as maxtour FROM CRICBUZZ.TOUR";
-                ResultSet rs = dc.getQueryResult(touridquery);
-                int primarykey = 1;
-                if (rs.next())
-                    primarykey = rs.getInt("maxtour") + 1;
 
-                tourID = primarykey;
                 String hostteamquery = "SELECT TEAM_ID FROM CRICBUZZ.TEAM WHERE TEAM_NAME =" + "'" + hostTeam + "'";
                 int hostteamid = -1;
-                rs = dc.getQueryResult(hostteamquery);
+                ResultSet rs = dc.getQueryResult(hostteamquery);
                 if (rs.next())
                     hostteamid = rs.getInt("TEAM_ID");
 
@@ -288,15 +272,23 @@ public class Controller {
 
 
                 if (hostteamid != -1 && visitteamid != -1) {
-                    String insert_query = "INSERT INTO CRICBUZZ.TOUR(TOUR_ID, HOST_TEAM, VISITING_TEAM, T20, ODI, TEST) " +
-                            "VALUES (" + primarykey + ", " + hostteamid + ", " + visitteamid + ", " + t20 + ", " + odi + ", " + test + ")";
-                    dc.insert(insert_query);
+                    String insert_query = "INSERT INTO CRICBUZZ.TOUR(HOST_TEAM, VISITING_TEAM, T20, ODI, TEST) " +
+                            "VALUES (" + hostteamid + ", " + visitteamid + ", " + t20 + ", " + odi + ", " + test + ")";
+                    String trID[] = {"TOUR_ID"};
+                    dc.doUpdate(insert_query, trID);
+
                     hostTeamName.setDisable(true);
                     opponentTeamName.setDisable(true);
                     tourDone.setDisable(true);
                     NoOfT20GameID.setDisable(true);
                     NoOfTestGameID.setDisable(true);
                     NoOfODIGameID.setDisable(true);
+
+                    rs = dc.generatedKeys();
+                    if(rs.next())
+                        tourID = rs.getInt(1);
+                    dc.closeConnection();
+
                 } else {
                     JOptionPane.showMessageDialog(null, "Failed to initiate the tour. Try again.");
                 }

@@ -61,56 +61,46 @@ public class PlayerController implements Initializable {
     private Controller teamenrolctrl = null;
 
     public void playerConfirm(ActionEvent event) {
-        try {
-            boolean pres = false, bowlres = false, batres = false, wkres = false;
+        boolean pres = false, bowlres = false, batres = false, wkres = false;
 
-            if (firstname.getText().isBlank() || lastname.getText().isBlank() || jersey.getText().isBlank() ||
-                    birthplace.getText().isBlank() || dob.getValue() == null || role.getText().isBlank() ||
-                    batting.getText().isBlank()) {
+        if (firstname.getText().isBlank() || lastname.getText().isBlank() || jersey.getText().isBlank() ||
+                birthplace.getText().isBlank() || dob.getValue() == null || role.getText().isBlank() ||
+                batting.getText().isBlank()) {
 
-                JOptionPane.showMessageDialog(null, "Insert all the required info completely");
-            } else if (team != null) {
-                DatabaseConnection dc = new DatabaseConnection();
-                int jnum = Integer.parseInt(jersey.getText());
-                String primarykeyquery = "SELECT MAX(PLAYER_ID) as maxpid FROM PLAYER";
-                ResultSet rs = dc.getQueryResult(primarykeyquery);
-                int primarykey = 1;
-                if (rs.next())
-                    primarykey = rs.getInt("maxpid") + 1;
+            JOptionPane.showMessageDialog(null, "Insert all the required info completely");
+        } else if (team != null) {
+            int jnum = Integer.parseInt(jersey.getText());
+            int primarykey = 1;
 
-                dc.closeConnection();
-                //From datepicker -> java.util.date
-                java.util.Date date = java.util.Date.from(dob.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
-                player = new Player(primarykey, firstname.getText(), lastname.getText(), birthplace.getText(), date, role.getText(), team.getTeam_ID(), jnum);
+            //From datepicker -> java.util.date
+            java.util.Date date = java.util.Date.from(dob.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+            player = new Player(firstname.getText(), lastname.getText(), birthplace.getText(), date, role.getText(), team.getTeam_ID(), jnum);
+            pres = player.insertPlayer(fin);
+            if(pres) {
+                primarykey = player.getPlayer_ID();
                 batsman = new Batsman(primarykey, batting.getText());
 
-                if(bowling.getText().isBlank())
+                if (bowling.getText().isBlank())
                     bowler = new Bowler(primarykey);
                 else
                     bowler = new Bowler(primarykey, bowling.getText());
                 wicketKeeper = new Wicket_Keeper(primarykey);
 
-                pres = player.insertPlayer(fin);
                 batres = batsman.insertBatsman();
                 bowlres = bowler.insertBowler();
                 wicketKeeper.insertWicketKeeper();
-
-            } else {
-                JOptionPane.showMessageDialog(null, "Failed to insert player. A team must be assigned for the player at first.");
             }
-
-            if (pres == true && batres == true && bowlres == true) {
-                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                stage.close();
-                teamenrolctrl.reduceCounter();
-                teamenrolctrl.showNumberofPlayer();
-            } else
-                JOptionPane.showMessageDialog(null, "Player addition failed. Try again");
+            else JOptionPane.showMessageDialog(null, "Failed to insert player");
         }
-        catch (SQLException e) {
-            System.out.println("Query filed to execute PlayerEnrol\\PlayerController :: " + e);;
-        }
+        else
+            JOptionPane.showMessageDialog(null, "Failed to insert player. A team must be assigned for the player at first.");
 
+        if (pres == true && batres == true && bowlres == true) {
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.close();
+            teamenrolctrl.reduceCounter();
+            teamenrolctrl.showNumberofPlayer();
+        } else JOptionPane.showMessageDialog(null, "Player addition failed. Try again");
     }
 
     @FXML
@@ -125,7 +115,7 @@ public class PlayerController implements Initializable {
                 System.out.println("file not found PlayerEnrol\\imageChooserAction :: " + e);
             }
             Image image = new Image(file.toURI().toString());
-            playerimage = new ImageView(image);
+            playerimage.setImage(image);
         }
     }
 

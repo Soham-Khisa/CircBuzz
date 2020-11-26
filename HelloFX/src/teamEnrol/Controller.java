@@ -8,6 +8,7 @@ package teamEnrol;
 import Database.DatabaseConnection;
 import JavaCode.*;
 import PlayerEnrol.PlayerController;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,11 +25,12 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import javax.xml.transform.Result;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.net.URL;
 import java.sql.*;
 import java.time.ZoneId;
@@ -71,83 +73,33 @@ public class Controller implements Initializable {
     public void teamConfirm(ActionEvent event) {
 
         DatabaseConnection dc = new DatabaseConnection();
-
-        if(!teamName.getText().isBlank()) {
-            String t = teamName.getText();
-            String q = "SELECT * FROM CRICBUZZ.TEAM WHERE TEAM_NAME = " + "'" + t + "'";
-            ResultSet rs = dc.getQueryResult(q);
-            try {
-                if(!rs.isBeforeFirst()) {
-                    verificationmessage.setText("Team Name is currently available.");
-                    if(teamshort.getText().isBlank() || headcoach.getText().isBlank() || boardpresident.getText().isBlank() || establishdate.getValue() == null)
-                        JOptionPane.showMessageDialog(null, "insert all the required fields");
-                    else {
-                        teamok = true;
-                        //Have to write the table insert code in this block;
-
-                        String primarykeyquery = "SELECT MAX(TEAM_ID) as maxteamid FROM CRICBUZZ.TEAM";
-                        rs = dc.getQueryResult(primarykeyquery);
-                        int primarykey=1;
-                        if(rs.next()) {
-                            primarykey = rs.getInt("maxteamid") + 1;
-                        }
-                        //From datepicker -> java.util.date
-                        java.util.Date date = java.util.Date.from(establishdate.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
-
-
-                        team = new Team(primarykey, teamName.getText(), teamshort.getText(), date, headcoach.getText(), boardpresident.getText());
-                        team.insertTeam(fin);
-                        verificationmessage.setText("Your team is confirmed");
-                        showNumberofPlayer();
-
-                        teamName.setDisable(true);
-                        headcoach.setDisable(true);
-                        boardpresident.setDisable(true);
-                        establishdate.setDisable(true);
-                        imageChooser.setDisable(true);
-                        confirmteam.setDisable(true);
-                        teamshort.setDisable(true);
-                    }
-                }
-                else if(headcoach.getText().isBlank() || boardpresident.getText().isBlank() || establishdate.getValue() == null) {
-                    teamok = false;
-                    verificationmessage.setText("");
-                    JOptionPane.showMessageDialog(null, "insert all the required fields");
-                }
-                else {
-                    String query = "SELECT * FROM CRICBUZZ.TEAM WHERE TEAM_ID = (SELECT MAX(TEAM_ID) AS TEAM_ID FROM CRICBUZZ.TEAM)";
-                    rs = dc.getQueryResult(query);
-                    if(rs.next() && team!=null) {
-                        String name = rs.getString("TEAM_NAME");
-                        String coach = rs.getString("HEAD_COACH");
-                        String board = rs.getString("BOARD_PRESIDENT");
-                        java.sql.Date date = rs.getDate("ESTABLISH_DATE");
-                        java.util.Date edate = java.util.Date.from(establishdate.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
-                        java.sql.Date sqlDate = new java.sql.Date(edate.getTime());
-                        if(name.equals(teamName.getText()) && coach.equals(headcoach.getText()) && board.equals(boardpresident.getText()) && sqlDate.equals(edate)) {
-                            teamok = true;
-                            verificationmessage.setText("Your team has been confirmed");
-                        }
-                        else {
-                            teamok = false;
-                            verificationmessage.setText("");
-                            JOptionPane.showMessageDialog(null, "This team is not available currently");
-                        }
-                    }
-                    else {
-                        teamok = false;
-                        verificationmessage.setText("");
-                        JOptionPane.showMessageDialog(null, "This team name is already taken, try a new one");
-                    }
-                }
-            }
-            catch (SQLException e) {
-                System.out.println("Result is not returned, teamVerification :: " + e);
-            }
-        }
+        if(teamName.getText().isBlank() || teamshort.getText().isBlank() || headcoach.getText().isBlank() || boardpresident.getText().isBlank() || establishdate.getValue() == null)
+            JOptionPane.showMessageDialog(null, "insert all the required fields");
         else {
-            JOptionPane.showMessageDialog(null, "Insert a name for the team");
+            teamok = true;
+            //Have to write the table insert code in this block;
+
+            //From datepicker -> java.util.date
+            java.util.Date date = java.util.Date.from(establishdate.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+            team = new Team(teamName.getText(), teamshort.getText(), date, headcoach.getText(), boardpresident.getText());
+            boolean verdict = team.insertTeam(fin);
+            if(verdict) {
+                verificationmessage.setText("Your team is confirmed");
+                teamName.setDisable(true);
+                headcoach.setDisable(true);
+                boardpresident.setDisable(true);
+                establishdate.setDisable(true);
+                imageChooser.setDisable(true);
+                confirmteam.setDisable(true);
+                teamshort.setDisable(true);
+            }
+            else
+                JOptionPane.showMessageDialog(null, "The team is not available");
+
+            showNumberofPlayer();
         }
+
     }
 
 
@@ -198,11 +150,16 @@ public class Controller implements Initializable {
         if(file != null) {
             try {
                 fin = new FileInputStream(file.getAbsolutePath());
+
+                BufferedImage bufferedImage = ImageIO.read(file);
+                Image image = SwingFXUtils.toFXImage(bufferedImage, null);
+                teamlogo.setImage(image);
             } catch (FileNotFoundException e) {
                 System.out.println("file not found teamEnrol\\imageChooserAction :: " + e);
+            } catch (IOException e) {
+                System.out.println("failed to read the image to bufferedImage :: " + e);
             }
-            image = new Image(file.toURI().toString());
-            teamlogo = new ImageView(image);
+            //image = new Image(file.toURI().toString());
         }
     }
 
