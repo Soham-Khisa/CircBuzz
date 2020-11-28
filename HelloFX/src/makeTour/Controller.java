@@ -250,12 +250,13 @@ public class Controller {
     public void tourDoneAction(ActionEvent event) {
         try {
 
-            if(hostTeamName.getValue()!=null && opponentTeamName.getValue()!=null && NoOfT20GameID.getText()!=null && NoOfODIGameID.getText()!=null && NoOfTestGameID.getText()!=null) {
+            if(!hostTeamName.getValue().isBlank() && !opponentTeamName.getValue().isBlank() && (!NoOfT20GameID.getText().isBlank() || !NoOfODIGameID.getText().isBlank() || !NoOfTestGameID.getText().isBlank())) {
                 String hostTeam = hostTeamName.getValue();
                 String visitingTeam = opponentTeamName.getValue();
-                t20 = Integer.parseInt(NoOfT20GameID.getText());
-                test = Integer.parseInt(NoOfTestGameID.getText());
-                odi = Integer.parseInt(NoOfODIGameID.getText());
+
+                if(!NoOfT20GameID.getText().isBlank())  t20 = Integer.parseInt(NoOfT20GameID.getText());
+                if(!NoOfTestGameID.getText().isBlank()) test = Integer.parseInt(NoOfTestGameID.getText());
+                if(!NoOfODIGameID.getText().isBlank())  odi = Integer.parseInt(NoOfODIGameID.getText());
 
 
                 String hostteamquery = "SELECT TEAM_ID FROM CRICBUZZ.TEAM WHERE TEAM_NAME =" + "'" + hostTeam + "'";

@@ -115,6 +115,7 @@ public class Controller<initialize> {
 
     public void enrolAnUmpireAction(ActionEvent event) {
         if(!umpireFirstName.isVisible() && !umpireLastName.isVisible() && !umpireCountry.isVisible() && !umpire_dob.isVisible() && !enrolUmpire.isVisible()) {
+            umpirelabel.setText("");
             umpirelabel.setVisible(true);
             umpireFirstName.setVisible(true);
             umpireCountry.setVisible(true);
@@ -149,6 +150,7 @@ public class Controller<initialize> {
             stadiumlabel.setVisible(false);
         }
         else {
+            stadiumlabel.setText("");
             stadiumlabel.setVisible(true);
             stadiumName.setVisible(true);
             stadiumLocation.setVisible(true);
@@ -166,6 +168,18 @@ public class Controller<initialize> {
         Stage window= (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(new Scene(root, 660, 580));
         window.show();
+    }
+
+    public void updateInfo(ActionEvent event) {
+        Parent root = null;
+        try {
+            root = FXMLLoader.load(getClass().getResource("/UpdateTables/updateinfo.fxml"));
+            Stage window= (Stage) ((Node) event.getSource()).getScene().getWindow();
+            window.setScene(new Scene(root));
+            window.show();
+        } catch (IOException e) {
+            System.out.println("Failed to load updateinfo frontPage\\Controller :: " + e);;
+        }
     }
 
     public void playGame2Action(ActionEvent event) {

@@ -5,12 +5,11 @@
 package JavaCode;
 
 import Database.DatabaseConnection;
-import com.sun.glass.ui.EventLoop;
-import javafx.animation.ScaleTransition;
-
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.shape.Circle;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.*;
 import java.util.Date;
 
@@ -22,6 +21,7 @@ public class Team {
     private int won;
     private int lost;
     private int draw;
+    private ImageView imageholder;
     private String head_coach;
     private String board_president;
     private String team_sf;
@@ -83,6 +83,10 @@ public class Team {
         this.board_president = board_president;
     }
 
+    public void setImage(ImageView imageholder) {
+        this.imageholder = imageholder;
+    }
+
     public int getTeam_ID() {
         return team_ID;
     }
@@ -111,6 +115,10 @@ public class Team {
         return draw;
     }
 
+    public ImageView getImageholder() {
+        return imageholder;
+    }
+
     public String getHead_coach() {
         return head_coach;
     }
@@ -128,6 +136,16 @@ public class Team {
     }
     public Team() {
 
+    }
+
+    public Team(Integer team_ID, String team_Name, String team_sf, Date established_date, String head_coach, String board_president, ImageView imageholder) {
+        this.team_ID = team_ID;
+        this.team_Name = team_Name;
+        this.team_sf = team_sf;
+        this.established_date = established_date;
+        this.head_coach = head_coach;
+        this.board_president = board_president;
+        this.imageholder = imageholder;
     }
 
     public boolean insertTeam(FileInputStream fin) {

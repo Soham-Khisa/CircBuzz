@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="616.0" prefWidth="661.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="frontPage.Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="616.0" prefWidth="661.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="frontPage.Controller">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="630.0" layoutX="6.0" layoutY="-9.0" stroke="BLACK" strokeType="INSIDE" width="666.0" />
       <Button layoutX="26.0" layoutY="156.0" mnemonicParsing="false" onAction="#enrolAteamAction" prefHeight="34.0" prefWidth="198.0" text="Enrol A Team" textFill="#0713ff73">
@@ -56,7 +59,7 @@
       <Label fx:id="game3Label" layoutX="26.0" layoutY="457.0" prefHeight="34.0" prefWidth="198.0" text="Label" />
       <TextField fx:id="umpireLastName" layoutX="487.0" layoutY="132.0" promptText="Last Name" visible="false" />
       <DatePicker fx:id="umpire_dob" layoutX="488.0" layoutY="209.0" prefHeight="25.0" prefWidth="149.0" visible="false" />
-      <Button layoutX="26.0" layoutY="98.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="198.0" text="UPDATE INFO" textFill="#0703f57a">
+      <Button layoutX="26.0" layoutY="98.0" mnemonicParsing="false" onAction="#updateInfo" prefHeight="34.0" prefWidth="198.0" text="UPDATE INFO" textFill="#0703f57a">
          <font>
             <Font name="Algerian" size="18.0" />
          </font>

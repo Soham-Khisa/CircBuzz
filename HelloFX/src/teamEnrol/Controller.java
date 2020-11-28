@@ -1,8 +1,3 @@
-/*
- * Author Soham Khisa
- * Author MD. Sakibur Reza
- */
-
 package teamEnrol;
 
 import Database.DatabaseConnection;
@@ -28,11 +23,9 @@ import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.xml.transform.Result;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
-import java.sql.*;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
@@ -117,6 +110,7 @@ public class Controller implements Initializable {
                 substage.setScene(new Scene(p));
                 pc.setPlayerTeam(team);                                                 //sending the team instance to the playercontrol instance
                 pc.setTeamEnrolController(this);
+                pc.setAvailableJersey();
                 substage.show();
             } else if (teamok == false) {
                 JOptionPane.showMessageDialog(null, "Team has not been confirmed yet");

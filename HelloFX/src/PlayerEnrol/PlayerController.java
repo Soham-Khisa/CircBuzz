@@ -7,10 +7,14 @@ package PlayerEnrol;
 
 import Database.DatabaseConnection;
 import JavaCode.*;
+import javafx.beans.Observable;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -37,22 +41,26 @@ public class PlayerController implements Initializable {
     @FXML
     private TextField lastname;
     @FXML
-    private TextField jersey;
-    @FXML
     private TextField birthplace;
     @FXML
     private DatePicker dob;
     @FXML
-    private TextField role;
+    private ComboBox<String> role;
     @FXML
-    private TextField batting;
+    private ComboBox<String> batting;
     @FXML
-    private TextField bowling;
+    private ComboBox<String> bowling;
+    @FXML
+    private ComboBox<String> jersey;
     @FXML
     private ImageView playerimage;
 
     private FileInputStream fin = null;
     private List<String> filelist;
+    private List<String> battingStyle;
+    private List<String> bowlingStyle;
+    private List<String> playerRole;
+    private List<String> jerseyNo;
     private Team team = null;
     private Player player = null;
     private Batsman batsman = null;
@@ -63,32 +71,34 @@ public class PlayerController implements Initializable {
     public void playerConfirm(ActionEvent event) {
         boolean pres = false, bowlres = false, batres = false, wkres = false;
 
-        if (firstname.getText().isBlank() || lastname.getText().isBlank() || jersey.getText().isBlank() ||
-                birthplace.getText().isBlank() || dob.getValue() == null || role.getText().isBlank() ||
-                batting.getText().isBlank()) {
+        if (firstname.getText().isBlank() || lastname.getText().isBlank() || jersey.getValue()==null ||
+                birthplace.getText().isBlank() || dob.getValue() == null || role.getValue()==null ||
+                batting.getValue()==null) {
 
             JOptionPane.showMessageDialog(null, "Insert all the required info completely");
         } else if (team != null) {
-            int jnum = Integer.parseInt(jersey.getText());
+            int jnum = Integer.parseInt(jersey.getValue());
             int primarykey = 1;
 
             //From datepicker -> java.util.date
             java.util.Date date = java.util.Date.from(dob.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
-            player = new Player(firstname.getText(), lastname.getText(), birthplace.getText(), date, role.getText(), team.getTeam_ID(), jnum);
+            player = new Player(firstname.getText(), lastname.getText(), birthplace.getText(), date, role.getValue(), team.getTeam_ID(), jnum);
             pres = player.insertPlayer(fin);
             if(pres) {
                 primarykey = player.getPlayer_ID();
-                batsman = new Batsman(primarykey, batting.getText());
+                batsman = new Batsman(primarykey, batting.getValue());
 
-                if (bowling.getText().isBlank())
+                if (bowling.getValue() == null)
                     bowler = new Bowler(primarykey);
                 else
-                    bowler = new Bowler(primarykey, bowling.getText());
-                wicketKeeper = new Wicket_Keeper(primarykey);
+                    bowler = new Bowler(primarykey, bowling.getValue());
 
                 batres = batsman.insertBatsman();
                 bowlres = bowler.insertBowler();
-                wicketKeeper.insertWicketKeeper();
+                if(role.getValue().equals("Wicket-keeper") || role.getValue().equals("Wicketkeeper-batsman")) {
+                    wicketKeeper = new Wicket_Keeper(primarykey);
+                    wicketKeeper.insertWicketKeeper();
+                }
             }
             else JOptionPane.showMessageDialog(null, "Failed to insert player");
         }
@@ -127,6 +137,31 @@ public class PlayerController implements Initializable {
         this.teamenrolctrl = teamenrolctrl;
     }
 
+    public void setAvailableJersey() {
+        if(team == null)    return;
+        String jerseyQuery = "SELECT JERSEY FROM CRICBUZZ.PLAYER WHERE TEAM_ID = " + team.getTeam_ID();
+        DatabaseConnection dc = new DatabaseConnection();
+        ResultSet rs = dc.getQueryResult(jerseyQuery);
+
+        jerseyNo = new ArrayList<>();
+        for(int i=1; i<=100; i++) {
+            Integer integer = i;
+            jerseyNo.add(integer.toString());
+        }
+        try {
+            while (rs.next()) {
+                Integer integer = rs.getInt("JERSEY");
+                jerseyNo.remove(integer.toString());
+            }
+        }
+        catch (SQLException e) {
+            System.out.println("Failed to add available jerseys. :: " + e);
+        }
+
+        ObservableList<String> observeJersey = FXCollections.observableArrayList(jerseyNo);
+        jersey.setItems(observeJersey);
+    }
+
     @Override
     public void initialize (URL url, ResourceBundle rb) {
         filelist = new ArrayList<>();
@@ -136,5 +171,25 @@ public class PlayerController implements Initializable {
         filelist.add("*.PNG");
         filelist.add("*.jpeg");
         filelist.add("*.JPEG");
+
+        battingStyle = new ArrayList<>();
+        battingStyle.add("Right-handed");
+        battingStyle.add("Left-handed");
+
+        bowlingStyle = List.of("Right-arm fast", "Right-arm fast-medium", "Right-arm medium-fast", "Right-arm medium", "Right-arm medium-slow",
+                "Right-arm slow-medium", "Right-arm slow", "Left-arm fast", "Left-arm fast-medium",
+                "Left-arm medium-fast", "Left-arm medium", "Left-arm medium-slow",
+                "Left-arm slow-medium", "Left-arm slow", "Right-arm off break",
+                "Right-arm leg break", "Right-arm leg break googly", "Right-arm leg spin",
+                "Slow left-arm orthodox", "Slow left-arm wrist spin", "Left-arm googly", "Left-arm leg spin");
+
+        playerRole = List.of("Wicket-keeper", "Batsman", "Bowler", "All-rounder", "Wicketkeeper-batsman");
+
+        ObservableList<String> observeBatting = FXCollections.observableArrayList(battingStyle);
+        batting.setItems(observeBatting);
+        ObservableList<String> observeBowling = FXCollections.observableArrayList(bowlingStyle);
+        bowling.setItems(observeBowling);
+        ObservableList<String> observeRole = FXCollections.observableArrayList(playerRole);
+        role.setItems(observeRole);
     }
 }
