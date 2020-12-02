@@ -13,6 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -24,6 +25,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+
+import javax.swing.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -33,6 +36,8 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class TeamUpdateController implements Initializable {
+    @FXML
+    private Label label;
     @FXML
     private TableView<Team> resultTable;
     @FXML
@@ -44,6 +49,7 @@ public class TeamUpdateController implements Initializable {
 
     private ObservableList<Team> datalist = FXCollections.observableArrayList();
     private Team team;
+    private TeamUpdateFinalController tufc;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -99,7 +105,7 @@ public class TeamUpdateController implements Initializable {
                 if(newValue == null || newValue.isEmpty())
                     return true;
 
-                String input = newValue;
+                String input = newValue.toLowerCase();
                 if (tm.getTeam_Name().toLowerCase().indexOf(input) != -1) {
                     return true;
                 }
@@ -114,6 +120,36 @@ public class TeamUpdateController implements Initializable {
 
         title.setStyle("-fx-alignment:CENTER");
         photo.setStyle("-fx-alignment:CENTER");
+        resultTable.setOnMouseClicked(e -> {
+            rowClickEvent();
+        });
+    }
+
+    public void rowClickEvent() {
+        team = null;
+        team = resultTable.getSelectionModel().getSelectedItem();
+
+        if(team == null)    return;
+
+        String text = "Are your sure to edit and update information on the selected team?";
+        int response = JOptionPane.showConfirmDialog(null, text, "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+        if(response == JOptionPane.YES_OPTION) {
+            FXMLLoader loader = new FXMLLoader();
+            Parent root = null;
+            try {
+                root = loader.load(getClass().getResource("/UpdateTables/TeamUpdate/TeamUpdateFinal.fxml").openStream());
+            } catch (IOException e) {
+                System.out.println("TeamUpdateFinalController.fxml file not found " + e);;
+            }
+            Stage window = (Stage) label.getScene().getWindow();
+            window.setScene(new Scene(root));
+            //pass the essential team instance as parameter
+            tufc = loader.getController();
+            tufc.setTeam(team);
+            tufc.setTeamFinalController();
+            window.show();
+        }
     }
 
     public void goBack(ActionEvent event) {

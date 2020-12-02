@@ -5,6 +5,7 @@
 package JavaCode;
 
 import Database.DatabaseConnection;
+import javafx.scene.image.ImageView;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -26,6 +27,12 @@ public class Player {
     private int num_of_matches;
     private int team_ID;
     private int jersey_No;
+    private String status;
+
+    // Needed for tableview in player update
+    private String teamName;
+    private String fullname;
+    private ImageView imageView;
 
     private PreparedStatement ps = null;
     private String insert1 = "INSERT INTO CRICBUZZ.PLAYER (FIRST_NAME, LAST_NAME, BORN, DOB, ROLE, TEAM_ID, JERSEY) "
@@ -36,11 +43,26 @@ public class Player {
     public Player(String first_Name, String last_Name, String birthplace, Date dob, String role, int team_ID, int jersey_No) {
         this.first_Name = first_Name;
         this.last_Name = last_Name;
+        this.fullname = this.first_Name + " " + this.last_Name;
         this.birthplace = birthplace;
         this.dob = dob;
         this.role = role;
         this.team_ID = team_ID;
         this.jersey_No = jersey_No;
+    }
+
+    public Player(String first_Name, String last_Name, String status, String birthplace, Date dob, String role, int team_ID, int jersey_No, String teamName, ImageView imageView) {
+        this.first_Name = first_Name;
+        this.last_Name = last_Name;
+        this.fullname = this.first_Name + " " + this.last_Name;
+        this.status = status;
+        this.birthplace = birthplace;
+        this.dob = dob;
+        this.role = role;
+        this.team_ID = team_ID;
+        this.jersey_No = jersey_No;
+        this.teamName = teamName;
+        this.imageView = imageView;
     }
 
     public int getPlayer_ID() {
@@ -50,7 +72,6 @@ public class Player {
     public void setPlayer_ID(int player_ID) {
         this.player_ID = player_ID;
     }
-
     public String getFirst_Name() {
         return first_Name;
     }
@@ -58,13 +79,11 @@ public class Player {
     public void setFirst_Name(String first_Name) {
         this.first_Name = first_Name;
     }
-
     public String getLast_Name() {
         return last_Name;
     }
 
     public String getRole() {return role;}
-
     public void setLast_Name(String last_Name) {
         this.last_Name = last_Name;
     }
@@ -72,7 +91,6 @@ public class Player {
     public Date getDob() {
         return dob;
     }
-
     public void setDob(Date dob) {
         this.dob = dob;
     }
@@ -80,7 +98,6 @@ public class Player {
     public int getNum_of_matches() {
         return num_of_matches;
     }
-
     public void setNum_of_matches(int num_of_matches) {
         this.num_of_matches = num_of_matches;
     }
@@ -88,7 +105,6 @@ public class Player {
     public int getTeam_ID() {
         return team_ID;
     }
-
     public void setTeam_ID(int team_ID) {
         this.team_ID = team_ID;
     }
@@ -96,10 +112,18 @@ public class Player {
     public int getJersey_No() {
         return jersey_No;
     }
+    public void setJersey_No(int jersey_No) { this.jersey_No = jersey_No; }
 
-    public void setJersey_No(int jersey_No) {
-        this.jersey_No = jersey_No;
-    }
+    public void setFullname(String fullname) { this.fullname = fullname; }
+    public String getFullname() { return fullname; }
+
+    public void setTeamName(String teamName) { this.teamName = teamName; }
+    public String getTeamName() { return teamName; }
+
+    public ImageView getImageView() { return imageView; }
+    public void setImageView(ImageView imageView) { this.imageView = imageView; }
+
+    public String getStatus() { return status; }
 
     @Override
     public String toString() {

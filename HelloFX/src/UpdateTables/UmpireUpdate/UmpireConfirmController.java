@@ -69,6 +69,7 @@ public class UmpireConfirmController implements Initializable {
         country.setText(umpire.getCountry());
         ObservableList<String> observeStatus = FXCollections.observableArrayList(statusList);
         status.setItems(observeStatus);
+        status.setValue(umpire.getStatus());
 
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(umpire.getDob());
@@ -103,6 +104,7 @@ public class UmpireConfirmController implements Initializable {
 
     public void updateUmpire(ActionEvent event) {
         if(firstname.getText().isBlank() || lastname.getText().isBlank() || country.getText().isBlank() || status.getValue()==null || dob.getValue()==null) {
+            updatemessage.setText("");
             JOptionPane.showMessageDialog(null, "Please fill out all the fields");
             return;
         }

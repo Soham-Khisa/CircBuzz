@@ -71,7 +71,7 @@ public class Controller<initialize> {
                 umpire_dob.setValue(null);
             }
             else {
-                umpirelabel.setVisible(false);
+                umpirelabel.setText("");
                 JOptionPane.showMessageDialog(null,"Umpire enrollment failed. Try again");
             }
         }
@@ -105,7 +105,7 @@ public class Controller<initialize> {
                 seatNoStadium.clear();
             }
             else {
-                stadiumlabel.setVisible(false);
+                stadiumlabel.setText("");
                 JOptionPane.showMessageDialog(null,"Stadium enrollment failed. Try again");
             }
         } else {

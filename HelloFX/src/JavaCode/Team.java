@@ -67,6 +67,10 @@ public class Team {
         this.won = won;
     }
 
+    public void setTeam_sf(String team_sf) {
+        this.team_sf = team_sf;
+    }
+
     public void setLost(int lost) {
         this.lost = lost;
     }
@@ -126,6 +130,8 @@ public class Team {
     public String getBoard_president() {
         return board_president;
     }
+
+    public String getTeam_sf() {return team_sf;}
 
     public Team(String team_Name, String team_sf, Date established_date, String head_coach, String board_president) {
         this.team_Name = team_Name;

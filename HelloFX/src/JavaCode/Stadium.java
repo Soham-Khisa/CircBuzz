@@ -1,16 +1,21 @@
-/*
- * Author MD. Sakibur Reza
- */
-
 package JavaCode;
 
 public class Stadium {
+    private int stadiumID;
     private String stadium_name;
     private String location;
     private String country;
     private int capacity;
 
     public Stadium(String stadium_name, String location, String country, int capacity) {
+        this.stadium_name = stadium_name;
+        this.location = location;
+        this.country = country;
+        this.capacity = capacity;
+    }
+
+    public Stadium(Integer stadiumID, String stadium_name, String location, String country, int capacity) {
+        this.stadiumID = stadiumID;
         this.stadium_name = stadium_name;
         this.location = location;
         this.country = country;
@@ -26,6 +31,13 @@ public class Stadium {
 
     public void setStadium_name(String stadium_name) {
         this.stadium_name = stadium_name;
+    }
+
+    public int getStadiumID() {
+        return stadiumID;
+    }
+    public void setStadiumID(int stadiumID) {
+        this.stadiumID = stadiumID;
     }
 
     public String getLocation() {
