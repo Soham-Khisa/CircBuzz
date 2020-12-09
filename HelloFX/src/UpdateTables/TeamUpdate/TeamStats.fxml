@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="401.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UpdateTables.TeamUpdate.TeamStatsController">
+   <children>
+      <Label layoutX="196.0" layoutY="45.0" prefHeight="35.0" prefWidth="208.0" text="TEAM STATISTICS" textFill="#2e10c6">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Label>
+      <Label layoutX="73.0" layoutY="169.0" text="MATCHES PLAYED : ">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="73.0" layoutY="199.0" text="WON :">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="73.0" layoutY="232.0" text="LOST : ">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="73.0" layoutY="266.0" text="DRAWN/NO RESULT : ">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="246.0" layoutY="131.0" text="ODI">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="322.0" layoutY="131.0" text="TEST">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="401.0" layoutY="131.0" text="T20">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="matchesODI" layoutX="246.0" layoutY="171.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="matchesTEST" layoutX="322.0" layoutY="171.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="matchesT20" layoutX="401.0" layoutY="171.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="wonODI" layoutX="245.0" layoutY="201.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="wonTEST" layoutX="321.0" layoutY="201.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="wonT20" layoutX="400.0" layoutY="201.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="lostODI" layoutX="244.0" layoutY="234.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="lostTest" layoutX="320.0" layoutY="234.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="lostT20" layoutX="399.0" layoutY="234.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="drawODI" layoutX="243.0" layoutY="268.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="drawTEST" layoutX="319.0" layoutY="268.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="drawT20" layoutX="398.0" layoutY="268.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+   </children>
+</AnchorPane>

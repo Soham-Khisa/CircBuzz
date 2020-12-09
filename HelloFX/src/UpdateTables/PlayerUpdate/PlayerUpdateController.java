@@ -13,10 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -71,12 +68,13 @@ public class PlayerUpdateController implements Initializable {
             System.out.println("Could not load the teams PlayerUpdateController.java :: " + e);
         }
 
-        String query = "SELECT FIRST_NAME, LAST_NAME, BORN, DOB, ROLE, PROFILE_PIC, STATUS, TEAM_ID, JERSEY " +
+        String query = "SELECT PLAYER_ID, FIRST_NAME, LAST_NAME, BORN, DOB, DEATH, ROLE, PROFILE_PIC, STATUS, TEAM_ID, JERSEY " +
                 "FROM CRICBUZZ.PLAYER";
 
         rs = dc.getQueryResult(query);
         try {
             while (rs.next()) {
+                Integer pid = rs.getInt("PLAYER_ID");
                 String fname = rs.getString("FIRST_NAME");
                 String lname = rs.getString("LAST_NAME");
                 String birthplace = rs.getString("BORN");
@@ -86,8 +84,14 @@ public class PlayerUpdateController implements Initializable {
                 Integer jersey = rs.getInt("JERSEY");
                 String tmName = teamList.get(teamid);
 
-                java.sql.Date date = rs.getDate("DOB");
-                java.util.Date dob = new java.sql.Date(date.getTime());
+                java.sql.Date birthdate = rs.getDate("DOB");
+                java.util.Date dob = new java.sql.Date(birthdate.getTime());
+
+                java.sql.Date deathdate = rs.getDate("DEATH");
+                java.util.Date death = null;
+                if(deathdate!=null) {
+                    death = new java.sql.Date(deathdate.getTime());
+                }
 
                 Blob blob = rs.getBlob("PROFILE_PIC");
                 ImageView imageView = new ImageView();
@@ -98,7 +102,7 @@ public class PlayerUpdateController implements Initializable {
                     Image image = new Image(new ByteArrayInputStream(data));
                     imageView.setImage(image);
                 }
-                player = new Player(fname, lname, status, birthplace, dob, role, teamid, jersey, tmName, imageView);
+                player = new Player(pid, fname, lname, status, birthplace, dob, death, role, teamid, jersey, tmName, imageView);
                 datalist.add(player);
             }
         } catch (SQLException e) {
@@ -136,8 +140,13 @@ public class PlayerUpdateController implements Initializable {
             System.out.println("Failed to close connection in PlayerUpdateController.java :: " + e);
         }
 
-        resultTable.setOnMouseClicked(e -> {
-            rowClickEvent();
+        resultTable.setRowFactory( rst -> {
+            TableRow<Player> row = new TableRow<>();
+            row.setOnMouseClicked(e -> {
+                if (e.getClickCount() == 2 && (! row.isEmpty()) )
+                    rowClickEvent();
+            });
+            return row;
         });
     }
 
@@ -160,10 +169,10 @@ public class PlayerUpdateController implements Initializable {
             }
             Stage window = (Stage) label.getScene().getWindow();
             window.setScene(new Scene(root));
-            //pass the essential team instance as parameter
+            //pass the essential player instance as parameter
             pufc = loader.getController();
-//            tufc.setTeam(team);
-//            tufc.setTeamFinalController();
+            pufc.setPlayer(player);
+            pufc.setPlayerFinalController();
             window.show();
         }
     }

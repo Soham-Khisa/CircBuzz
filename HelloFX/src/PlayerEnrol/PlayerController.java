@@ -15,12 +15,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import teamEnrol.Controller;
 
 import javax.swing.*;
@@ -30,6 +32,7 @@ import java.io.FileNotFoundException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,18 +89,25 @@ public class PlayerController implements Initializable {
             pres = player.insertPlayer(fin);
             if(pres) {
                 primarykey = player.getPlayer_ID();
-                batsman = new Batsman(primarykey, batting.getValue());
+                for(int i=1; i<=3; i++) {
+                    batsman = new Batsman(primarykey, i, batting.getValue());
+                    batres = batsman.insertBatsman();
+                }
 
-                if (bowling.getValue() == null)
-                    bowler = new Bowler(primarykey);
-                else
-                    bowler = new Bowler(primarykey, bowling.getValue());
-
-                batres = batsman.insertBatsman();
-                bowlres = bowler.insertBowler();
-                if(role.getValue().equals("Wicket-keeper") || role.getValue().equals("Wicketkeeper-batsman")) {
-                    wicketKeeper = new Wicket_Keeper(primarykey);
-                    wicketKeeper.insertWicketKeeper();
+                if(role.getValue().equals("Bowler") || role.getValue().equals("All-rounder") || bowling.getValue()!=null) {
+                    for(int i=1; i<=3; i++) {
+                        if (bowling.getValue() == null)
+                            bowler = new Bowler(primarykey, i);
+                        else
+                            bowler = new Bowler(primarykey, i, bowling.getValue());
+                        bowlres = bowler.insertBowler();
+                    }
+                }
+                else if(role.getValue().equals("Wicket-keeper") || role.getValue().equals("Wicketkeeper-batsman")) {
+                    for(int i=1; i<=3; i++) {
+                        wicketKeeper = new Wicket_Keeper(primarykey, i);
+                        wkres = wicketKeeper.insertWicketKeeper();
+                    }
                 }
             }
             else JOptionPane.showMessageDialog(null, "Failed to insert player");
@@ -105,11 +115,13 @@ public class PlayerController implements Initializable {
         else
             JOptionPane.showMessageDialog(null, "Failed to insert player. A team must be assigned for the player at first.");
 
-        if (pres == true && batres == true && bowlres == true) {
+        if (pres == true && batres == true) {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.close();
-            teamenrolctrl.reduceCounter();
-            teamenrolctrl.showNumberofPlayer();
+            if(teamenrolctrl != null) {
+                teamenrolctrl.reduceCounter();
+                teamenrolctrl.showNumberofPlayer();
+            }
         } else JOptionPane.showMessageDialog(null, "Player addition failed. Try again");
     }
 
@@ -191,5 +203,20 @@ public class PlayerController implements Initializable {
         bowling.setItems(observeBowling);
         ObservableList<String> observeRole = FXCollections.observableArrayList(playerRole);
         role.setItems(observeRole);
+
+        Callback<DatePicker, DateCell> callB = new Callback<DatePicker, DateCell>() {
+            @Override
+            public DateCell call(final DatePicker param) {
+                return new DateCell() {
+                    @Override
+                    public void updateItem(LocalDate item, boolean empty) {
+                        super.updateItem(item, empty); //To change body of generated methods, choose Tools | Templates.
+                        setDisable(empty || item.compareTo(LocalDate.now())>0 || item.compareTo(LocalDate.now().minusYears(14))>0);
+                    }
+
+                };
+            }
+        };
+        dob.setDayCellFactory(callB);
     }
 }

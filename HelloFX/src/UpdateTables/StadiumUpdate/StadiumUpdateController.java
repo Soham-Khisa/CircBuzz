@@ -2,6 +2,7 @@ package UpdateTables.StadiumUpdate;
 
 import Database.DatabaseConnection;
 import JavaCode.Stadium;
+import JavaCode.Umpire;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -90,8 +91,13 @@ public class StadiumUpdateController implements Initializable {
         stdname.setStyle("-fx-alignment:CENTER");
         country.setStyle("-fx-alignment:CENTER");
 
-        resultTable.setOnMouseClicked(e -> {
-            rowClickEvent();
+        resultTable.setRowFactory( rst -> {
+            TableRow<Stadium> row = new TableRow<>();
+            row.setOnMouseClicked(e -> {
+                if (e.getClickCount() == 2 && (! row.isEmpty()) )
+                    rowClickEvent();
+            });
+            return row;
         });
 
     }

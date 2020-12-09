@@ -15,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import javafx.scene.image.ImageView;
@@ -66,6 +67,7 @@ public class TeamUpdateFinalController implements Initializable {
     private Team team;
     private List<String> filelist;
     private FileInputStream fin = null;
+    private TeamStatsController tsc = null;
 
     public void setTeam(Team team) {
         this.team = team;
@@ -217,5 +219,28 @@ public class TeamUpdateFinalController implements Initializable {
         } catch (IOException e) {
             System.out.println("Failed to load UmpireUpdate UpdateTables\\TeamUpdate\\TeamUpdateFinalController :: " + e);;
         }
+    }
+
+    public void clickTeamStats(ActionEvent event) {
+        if(team==null) {
+            JOptionPane.showMessageDialog(null, "No player is available");
+            return;
+        }
+        FXMLLoader loader = new FXMLLoader();
+        Parent root = null;
+        try {
+            root = loader.load(getClass().getResource("/UpdateTables/TeamUpdate/TeamStats.fxml").openStream());
+        } catch (IOException e) {
+            System.out.println("PlayerStats.fxml file not found " + e);;
+        }
+        Stage substage = new Stage();
+        Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();
+        substage.initOwner(stage);
+        substage.initModality(Modality.WINDOW_MODAL);
+        substage.setScene(new Scene(root));
+        tsc = loader.getController();
+        tsc.setPlayer(team);
+        tsc.setAll();
+        substage.show();
     }
 }

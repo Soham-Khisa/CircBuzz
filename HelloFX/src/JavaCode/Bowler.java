@@ -14,6 +14,7 @@ import java.sql.Statement;
 
 public class Bowler {
     private int playerID;
+    private int match_type_id;
     private int wickets;
     private int balls_bowled;
     private int five_wickets_haul;
@@ -120,21 +121,23 @@ public class Bowler {
                 '}';
     }
 
-    public Bowler(int playerID, String bowling_style) {
+    public Bowler(int playerID, int match_type_id, String bowling_style) {
         this.playerID = playerID;
+        this.match_type_id = match_type_id;
         this.bowling_style = bowling_style;
     }
 
-    public Bowler(int playerID) {
+    public Bowler(int playerID, int match_type_id) {
         this.playerID = playerID;
+        this.match_type_id = match_type_id;
     }
 
     public boolean insertBowler() {
         DatabaseConnection dc = new DatabaseConnection();
-        String insert1 = "INSERT INTO CRICBUZZ.BOWLER (PLAYER_ID) " +
-                "VALUES (" + playerID + ")";
-        String insert2 = "INSERT INTO CRICBUZZ.BOWLER (PLAYER_ID, BOWLING_STYLE) " +
-                "VALUES (" + playerID + "," + " '" + bowling_style + "')";
+        String insert1 = "INSERT INTO CRICBUZZ.BOWLER (PLAYER_ID, MATCH_TYPE_ID) " +
+                "VALUES (" + playerID + ", " + match_type_id + ")";
+        String insert2 = "INSERT INTO CRICBUZZ.BOWLER (PLAYER_ID, MATCH_TYPE_ID, BOWLING_STYLE) " +
+                "VALUES (" + playerID + ", " + match_type_id +", '" + bowling_style + "')";
         boolean v = false;
         if(bowling_style==null) {
             v = dc.doUpdate(insert1);

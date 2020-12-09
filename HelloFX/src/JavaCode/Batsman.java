@@ -14,6 +14,7 @@ public class Batsman {
     private int centuries;
     private int half_centuries;
     private int top_score;
+    private int match_type_id;
     private double batting_avg;
     private double strike_rate;
     private String batting_style;
@@ -96,15 +97,16 @@ public class Batsman {
                 '}';
     }
 
-    public Batsman(int player_ID, String batting_style) {
+    public Batsman(int player_ID, int match_type_id, String batting_style) {
         this.player_ID = player_ID;
+        this.match_type_id = match_type_id;
         this.batting_style = batting_style;
     }
 
     public boolean insertBatsman() {
         DatabaseConnection dc = new DatabaseConnection();
-        String insert = "INSERT INTO CRICBUZZ.BATSMAN (PLAYER_ID, BATTING_STYLE) " +
-                "VALUES (" + player_ID + "," + " '" + batting_style + "')";
+        String insert = "INSERT INTO CRICBUZZ.BATSMAN (PLAYER_ID, MATCH_TYPE_ID, BATTING_STYLE) " +
+                "VALUES (" + player_ID + ", " + match_type_id + ", '" + batting_style + "')";
         boolean v = dc.doUpdate(insert);
         if(v) {
             System.out.println("Batsman insert is successful");

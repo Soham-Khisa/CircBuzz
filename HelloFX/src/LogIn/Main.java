@@ -13,7 +13,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("/LogIn/LogIn.fxml"));
         primaryStage.setTitle("Welcome to ICC database");
-        primaryStage.setScene(new Scene(root, 660, 586));
+        primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
 

@@ -13,11 +13,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -49,6 +51,10 @@ public class UmpireConfirmController implements Initializable {
     private Button button;
     @FXML
     private Label updatemessage;
+    @FXML
+    private Label origdeath;
+    @FXML
+    private DatePicker death;
 
     private List<String> statusList;
     private Umpire umpire;
@@ -56,7 +62,7 @@ public class UmpireConfirmController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         statusList = new ArrayList<>();
-        statusList = List.of("Active", "Retired");
+        statusList = List.of("Active", "Retired", "Died");
     }
 
     public void setUmpireConfirmController(Umpire ump) {
@@ -77,6 +83,54 @@ public class UmpireConfirmController implements Initializable {
         int month = calendar.get(Calendar.MONTH) + 1;
         int day = calendar.get(Calendar.DAY_OF_MONTH);
         dob.setValue(LocalDate.of(year, month, day));
+
+        if(umpire.getDeath()!=null) {
+            calendar = new GregorianCalendar();
+            calendar.setTime(umpire.getDeath());
+            year = calendar.get(Calendar.YEAR);
+            month = calendar.get(Calendar.MONTH) + 1;
+            day = calendar.get(Calendar.DAY_OF_MONTH);
+            death.setValue(LocalDate.of(year, month, day));
+        }
+
+        Callback<DatePicker, DateCell> callB = new Callback<DatePicker, DateCell>() {
+            @Override
+            public DateCell call(final DatePicker param) {
+                return new DateCell() {
+                    @Override
+                    public void updateItem(LocalDate item, boolean empty) {
+                        super.updateItem(item, empty); //To change body of generated methods, choose Tools | Templates.
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+                        String datetext = formatter.format(umpire.getDob());
+                        Date formatedDate = null;
+                        try {
+                            formatedDate = formatter.parse(datetext);
+                        } catch (ParseException e) {
+                            System.out.println("Failed to parse umpire.dob UmpireConfirmController :: " + e);
+                        }
+                        LocalDate birthdate = formatedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                        setDisable(empty || item.compareTo(birthdate.plusYears(20)) < 0 || item.compareTo(LocalDate.now())>0);
+                    }
+
+                };
+            }
+        };
+        death.setDayCellFactory(callB);
+
+        callB = new Callback<DatePicker, DateCell>() {
+            @Override
+            public DateCell call(final DatePicker param) {
+                return new DateCell() {
+                    @Override
+                    public void updateItem(LocalDate item, boolean empty) {
+                        super.updateItem(item, empty); //To change body of generated methods, choose Tools | Templates.
+                        setDisable(empty || item.compareTo(LocalDate.now())>0 || item.compareTo(LocalDate.now().minusYears(20))>0);
+                    }
+
+                };
+            }
+        };
+        dob.setDayCellFactory(callB);
     }
 
     public void showOrhideOriginal(ActionEvent event) {
@@ -91,6 +145,12 @@ public class UmpireConfirmController implements Initializable {
             DateFormat df = new SimpleDateFormat(pattern);
             String dobstring = df.format(umpire.getDob());
             origdob.setText(dobstring);
+
+            java.util.Date deathdate = umpire.getDeath();
+            if(deathdate != null) {
+                String deathString = df.format(deathdate);
+                origdeath.setText(deathString);
+            }
         }
         else {
             button.setText("SHOW ORIGINALS");
@@ -99,6 +159,7 @@ public class UmpireConfirmController implements Initializable {
             origcountry.setText("");
             origstatus.setText("");
             origdob.setText("");
+            origdeath.setText("");
         }
     }
 
@@ -108,15 +169,39 @@ public class UmpireConfirmController implements Initializable {
             JOptionPane.showMessageDialog(null, "Please fill out all the fields");
             return;
         }
+        else if((status.getValue().equals("Active") || status.getValue().equals("Retired")) && death.getValue()!=null) {
+            updatemessage.setText("");
+            JOptionPane.showMessageDialog(null, "The umpire cannot have a death date with the status Active or Retired");
+            return;
+        }
+        else if(status.getValue().equals("Died") && death.getValue() == null) {
+            updatemessage.setText("");
+            JOptionPane.showMessageDialog(null, "Please select the death date");
+            return;
+        }
+
         DatabaseConnection dc = new DatabaseConnection();
 
         java.util.Date date = java.util.Date.from(dob.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
         String querydate = dob.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
-        String updatequery = "UPDATE CRICBUZZ.UMPIRE SET " +
-                "FIRST_NAME = '" + firstname.getText() + "', LAST_NAME = '" + lastname.getText() + "', " +
-                "COUNTRY = '" + country.getText() + "', STATUS = '" + status.getValue() + "', DOB = TO_DATE('" + querydate + "', 'DD/MM/YYYY')" +
-                " WHERE UMPIRE_ID = " + umpire.getID();
+        java.util.Date deathdate = null;
+
+        String updatequery = null;
+        if(status.getValue().equals("Active") || status.getValue().equals("Retired")) {
+            updatequery = "UPDATE CRICBUZZ.UMPIRE SET " +
+                    "FIRST_NAME = '" + firstname.getText() + "', LAST_NAME = '" + lastname.getText() + "', " +
+                    "COUNTRY = '" + country.getText() + "', STATUS = '" + status.getValue() + "', DOB = TO_DATE('" + querydate + "', 'DD/MM/YYYY')" +
+                    " WHERE UMPIRE_ID = " + umpire.getID();
+        }
+        else if(status.getValue().equals("Died")) {
+            deathdate = java.util.Date.from(death.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+            String querydeath = death.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            updatequery = "UPDATE CRICBUZZ.UMPIRE SET " +
+                    "FIRST_NAME = '" + firstname.getText() + "', LAST_NAME = '" + lastname.getText() + "', " +
+                    "COUNTRY = '" + country.getText() + "', STATUS = '" + status.getValue() + "', DOB = TO_DATE('" + querydate + "', 'DD/MM/YYYY')" +
+                    ", DEATH = TO_DATE('" + querydeath + "', 'DD/MM/YYYY')" + " WHERE UMPIRE_ID = " + umpire.getID();
+        }
 
         boolean bool = dc.doUpdate(updatequery);
         if(bool) {
@@ -126,6 +211,7 @@ public class UmpireConfirmController implements Initializable {
             umpire.setCountry(country.getText());
             umpire.setStatus(status.getValue());
             umpire.setDob(date);
+            umpire.setDeath(deathdate);
 
             if(button.getText().equals("HIDE ORIGINALS")) {
                 origfname.setText(umpire.getFirst_name());
@@ -137,6 +223,12 @@ public class UmpireConfirmController implements Initializable {
                 DateFormat df = new SimpleDateFormat(pattern);
                 String dobstring = df.format(umpire.getDob());
                 origdob.setText(dobstring);
+
+                if(umpire.getDeath()!=null) {
+                    String deathString = df.format(umpire.getDeath());
+                    origdeath.setText(dobstring);
+                }
+                else    origdeath.setText("");
             }
         }
         else    JOptionPane.showMessageDialog(null, "Failed to update");
@@ -153,6 +245,10 @@ public class UmpireConfirmController implements Initializable {
         } catch (IOException e) {
             System.out.println("Failed to load UmpireUpdate UpdateTables\\UmpireUpdate\\UmpireUpdateController :: " + e);;
         }
+    }
+
+    public void clearDeathdate(ActionEvent e) {
+        death.setValue(null);
     }
 
 }

@@ -23,6 +23,7 @@ public class Player {
     private String last_Name;
     private String birthplace;
     private Date dob;
+    private Date death = null;
     private String role;
     private int num_of_matches;
     private int team_ID;
@@ -40,6 +41,18 @@ public class Player {
     private String insert2 = "INSERT INTO CRICBUZZ.PLAYER (FIRST_NAME, LAST_NAME, BORN, DOB, ROLE, TEAM_ID, JERSEY, PROFILE_PIC) "
             + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
+    public Player(Integer player_ID, String first_Name, String last_Name, String birthplace, Date dob, String role, int team_ID, int jersey_No) {
+        this.player_ID = player_ID;
+        this.first_Name = first_Name;
+        this.last_Name = last_Name;
+        this.fullname = this.first_Name + " " + this.last_Name;
+        this.birthplace = birthplace;
+        this.dob = dob;
+        this.role = role;
+        this.team_ID = team_ID;
+        this.jersey_No = jersey_No;
+    }
+
     public Player(String first_Name, String last_Name, String birthplace, Date dob, String role, int team_ID, int jersey_No) {
         this.first_Name = first_Name;
         this.last_Name = last_Name;
@@ -49,6 +62,11 @@ public class Player {
         this.role = role;
         this.team_ID = team_ID;
         this.jersey_No = jersey_No;
+    }
+
+    public Player(String first_Name, String last_Name) {
+        this.first_Name = first_Name;
+        this.last_Name = last_Name;
     }
 
     public Player(String first_Name, String last_Name, String status, String birthplace, Date dob, String role, int team_ID, int jersey_No, String teamName, ImageView imageView) {
@@ -65,8 +83,36 @@ public class Player {
         this.imageView = imageView;
     }
 
+    public Player(Integer player_ID, String first_Name, String last_Name, String status, String birthplace, Date dob, Date death, String role, int team_ID, int jersey_No, String teamName, ImageView imageView) {
+        this.player_ID = player_ID;
+        this.first_Name = first_Name;
+        this.last_Name = last_Name;
+        this.fullname = this.first_Name + " " + this.last_Name;
+        this.status = status;
+        this.birthplace = birthplace;
+        this.dob = dob;
+        this.death = death;
+        this.role = role;
+        this.team_ID = team_ID;
+        this.jersey_No = jersey_No;
+        this.teamName = teamName;
+        this.imageView = imageView;
+    }
+
     public int getPlayer_ID() {
         return player_ID;
+    }
+
+    public Date getDeath() {
+        return death;
+    }
+
+    public void setBirthplace(String birthplace) {
+        this.birthplace = birthplace;
+    }
+
+    public String getBirthplace() {
+        return birthplace;
     }
 
     public void setPlayer_ID(int player_ID) {
@@ -93,6 +139,18 @@ public class Player {
     }
     public void setDob(Date dob) {
         this.dob = dob;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public void setDeath(Date death) {
+        this.death = death;
     }
 
     public int getNum_of_matches() {
@@ -182,4 +240,44 @@ public class Player {
         return false;
     }
 
+    public void makePlayerWithFirstLastName(int teamId) throws SQLException {
+        team_ID=teamId;
+        DatabaseConnection dc= new DatabaseConnection();
+        String query="SELECT * FROM PLAYER\n" +
+                "WHERE FIRST_NAME='"+first_Name+"' AND LAST_NAME='"+last_Name+"'AND TEAM_ID="+team_ID+" AND STATUS LIKE('Active')";
+        ResultSet rs= dc.getQueryResult(query);
+        if(rs.next()){
+            player_ID=rs.getInt("PLAYER_ID");
+            birthplace=rs.getString("BORN");
+            role=rs.getString("ROLE");
+            jersey_No=rs.getInt("JERSEY");
+            dob= rs.getDate("DOB");
+            num_of_matches= rs.getInt("NUM_OF_MATCHES");
+        }
+    }
+
+    public void UpdateNumOfMatches(int id) throws SQLException {
+        player_ID=id;
+        DatabaseConnection dc= new DatabaseConnection();
+        String query="UPDATE PLAYER\n" +
+                "SET NUM_OF_MATCHES=NVL(NUM_OF_MATCHES,0)+1\n" +
+                "WHERE PLAYER_ID="+player_ID;
+        dc.doUpdate(query);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Player) {
+            Player temp = (Player) obj;
+            if (this.first_Name.equals(temp.getFirst_Name()) && this.last_Name.equals(temp.last_Name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return (this.first_Name.hashCode() + this.last_Name.hashCode());
+    }
 }

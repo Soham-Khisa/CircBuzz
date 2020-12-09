@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="644.0" prefWidth="851.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UpdateTables.PlayerUpdate.PlayerStatsController">
+   <children>
+      <Label layoutX="277.0" layoutY="53.0" prefHeight="35.0" prefWidth="364.0" text="PLAYER CAREER INFORMATION" textFill="#2e10c6">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Label>
+      <Label layoutX="531.0" layoutY="232.0" prefHeight="27.0" prefWidth="85.0" text="BATTING" textFill="#c48b12">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="88.0" layoutY="232.0" prefHeight="27.0" prefWidth="92.0" text="BOWLING" textFill="#c47b12">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="490.0" layoutY="344.0" text="RUNS : ">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="491.0" layoutY="277.0" text="BATTING STYLE : ">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="490.0" layoutY="373.0" text="AVERAGE : ">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="491.0" layoutY="403.0" text="STRIKE RATE : ">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="491.0" layoutY="431.0" text="CENTURIES : ">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="491.0" layoutY="457.0" text="HALF CENTURIES : ">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="29.0" layoutY="344.0" text="WICKETS : ">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="28.0" layoutY="277.0" text="BOWLING STYLE : ">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="491.0" layoutY="487.0" text="HIGHEST SCORE : ">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="29.0" layoutY="373.0" text="AVERAGE : ">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="29.0" layoutY="403.0" text="STRIKE RATE : ">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="28.0" layoutY="457.0" text="FIVE WICKETS : ">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="29.0" layoutY="487.0" text="TEN WICKETS : ">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="29.0" layoutY="431.0" text="ECONOMY : ">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="29.0" layoutY="514.0" text="BALLS BOWLED : ">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="176.0" layoutY="129.0" text="MATCHES PLAYED : ">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="bowlingStyle" layoutX="152.0" layoutY="279.0" prefHeight="17.0" prefWidth="182.0" text="N/A" />
+      <Label fx:id="wicketsODI" layoutX="201.0" layoutY="347.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="bowlingAvgODI" layoutX="200.0" layoutY="375.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="bowlingStrikeODI" layoutX="200.0" layoutY="405.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="economyODI" layoutX="200.0" layoutY="432.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="fivewicketsODI" layoutX="200.0" layoutY="459.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="tenwicketsODI" layoutX="200.0" layoutY="489.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="ballsBowledODI" layoutX="200.0" layoutY="516.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="battingStyle" layoutX="607.0" layoutY="279.0" prefHeight="17.0" prefWidth="192.0" text="N/A" />
+      <Label layoutX="176.0" layoutY="155.0" text="CATCHES : ">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="176.0" layoutY="182.0" text="STUMPINGS : ">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="29.0" layoutY="542.0" text="BEST FIGURE (MATCH) :">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="bestfigureMatchODI" layoutX="200.0" layoutY="544.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label layoutX="201.0" layoutY="320.0" text="ODI">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="wicketsTEST" layoutX="277.0" layoutY="347.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="bowlingAvgTEST" layoutX="276.0" layoutY="375.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="bowlingStrikeTEST" layoutX="276.0" layoutY="405.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="economyTEST" layoutX="276.0" layoutY="432.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="fivewicketsTEST" layoutX="276.0" layoutY="459.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="tenwicketsTEST" layoutX="276.0" layoutY="489.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="ballsBowledTEST" layoutX="276.0" layoutY="516.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="bestfigureMatchTEST" layoutX="276.0" layoutY="544.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label layoutX="277.0" layoutY="320.0" text="TEST">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="wicketsT20" layoutX="356.0" layoutY="347.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="bowlingAvgT20" layoutX="355.0" layoutY="375.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="bowlingStrikeT20" layoutX="355.0" layoutY="405.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="economyT20" layoutX="355.0" layoutY="432.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="fivewicketsT20" layoutX="355.0" layoutY="459.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="tenwicketsT20" layoutX="355.0" layoutY="489.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="ballsBowledT20" layoutX="355.0" layoutY="516.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="bestfigureMatchT20" layoutX="355.0" layoutY="544.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label layoutX="356.0" layoutY="320.0" text="T20">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="runsODI" layoutX="623.0" layoutY="347.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="battingAvgODI" layoutX="622.0" layoutY="375.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="battingStrikeODI" layoutX="622.0" layoutY="405.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="centuriesODI" layoutX="622.0" layoutY="432.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="halfcenturiesODI" layoutX="622.0" layoutY="459.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="topscoreODI" layoutX="622.0" layoutY="489.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label layoutX="623.0" layoutY="320.0" text="ODI">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="runsTEST" layoutX="699.0" layoutY="347.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="battingAvgTEST" layoutX="698.0" layoutY="375.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="battingStrikeTEST" layoutX="698.0" layoutY="405.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="centuriesTEST" layoutX="698.0" layoutY="432.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="halfcenturiesTEST" layoutX="698.0" layoutY="459.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="topscoreTEST" layoutX="698.0" layoutY="489.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label layoutX="699.0" layoutY="320.0" text="TEST">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="runsT20" layoutX="778.0" layoutY="347.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="battingAvgT20" layoutX="777.0" layoutY="375.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="battingStrikeT20" layoutX="777.0" layoutY="405.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="centuriesT20" layoutX="777.0" layoutY="432.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="halfcenturiesT20" layoutX="777.0" layoutY="459.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="topscoreT20" layoutX="777.0" layoutY="489.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label layoutX="778.0" layoutY="320.0" text="T20">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="491.0" layoutY="514.0" text="INNINGS : ">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="28.0" layoutY="595.0" text="INNINGS : ">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="inningsbatODI" layoutX="622.0" layoutY="516.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="inningsbatTEST" layoutX="698.0" layoutY="516.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="inningsbatT20" layoutX="777.0" layoutY="516.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="inningsbowlODI" layoutX="199.0" layoutY="597.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="inningsbowlTEST" layoutX="275.0" layoutY="597.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="inningsbowlT20" layoutX="354.0" layoutY="597.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label layoutX="322.0" layoutY="109.0" text="ODI">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="398.0" layoutY="109.0" text="TEST">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="477.0" layoutY="109.0" text="T20">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="matchesODI" layoutX="322.0" layoutY="131.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="matchesTEST" layoutX="398.0" layoutY="131.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="matchesT20" layoutX="477.0" layoutY="131.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="catchesODI" layoutX="321.0" layoutY="157.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="catchesTEST" layoutX="397.0" layoutY="157.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="catchesT20" layoutX="476.0" layoutY="157.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="stumpingODI" layoutX="320.0" layoutY="184.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="stumpingTEST" layoutX="396.0" layoutY="184.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="stumpingT20" layoutX="475.0" layoutY="184.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label layoutX="28.0" layoutY="568.0" text="BEST FIGURE (INNINGS) : ">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="bestfigureIngODI" layoutX="199.0" layoutY="570.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="bestfigureIngTEST" layoutX="275.0" layoutY="570.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+      <Label fx:id="bestfigureIngT20" layoutX="354.0" layoutY="570.0" prefHeight="17.0" prefWidth="50.0" text="N/A" />
+   </children>
+</AnchorPane>

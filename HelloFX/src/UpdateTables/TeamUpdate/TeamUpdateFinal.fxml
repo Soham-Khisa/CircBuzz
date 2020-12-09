@@ -92,5 +92,10 @@
             <Font size="11.0" />
          </font>
       </Label>
+      <Button layoutX="493.0" layoutY="390.0" mnemonicParsing="false" onAction="#clickTeamStats" text="TEAM STATS">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

@@ -2,6 +2,7 @@ package UpdateTables.TeamUpdate;
 
 import Database.DatabaseConnection;
 import JavaCode.Team;
+import JavaCode.Umpire;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -13,10 +14,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -120,8 +118,14 @@ public class TeamUpdateController implements Initializable {
 
         title.setStyle("-fx-alignment:CENTER");
         photo.setStyle("-fx-alignment:CENTER");
-        resultTable.setOnMouseClicked(e -> {
-            rowClickEvent();
+
+        resultTable.setRowFactory( rst -> {
+            TableRow<Team> row = new TableRow<>();
+            row.setOnMouseClicked(e -> {
+                if (e.getClickCount() == 2 && (! row.isEmpty()) )
+                    rowClickEvent();
+            });
+            return row;
         });
     }
 

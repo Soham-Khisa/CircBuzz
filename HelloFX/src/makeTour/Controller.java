@@ -21,8 +21,6 @@ import JavaCode.Team;
 import javafx.util.Callback;
 
 import javax.swing.*;
-import javax.xml.transform.Result;
-import java.awt.*;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -52,6 +50,7 @@ public class Controller {
     String[] allTeam;
     int tourID=-1,t20=0,test=0,odi=0;
     int t20Ordering=0,testOrdering=0,odiOrdering=0;
+    int hostteamid = -1, visitteamid = -1;;
     @FXML
     public void initialize() throws SQLException {
         dc = new DatabaseConnection();
@@ -119,13 +118,13 @@ public class Controller {
             System.out.println("Exception in loading Front page:"+e);
         }
         Stage window= (Stage) ((Node) event.getSource()).getScene().getWindow();
-        window.setScene(new Scene(root, 660, 586));
+        window.setScene(new Scene(root));
         window.show();
     }
 
 
     public void fixtureDoneAction(ActionEvent event) throws IOException, SQLException {
-        if(tourID!=-1 && datePickerID.getValue()!=null && gameFormatID.getValue()!=null && stadiumID.getValue()!=null && gameTimeID.getText()!=null){
+        if(tourID!=-1 && hostteamid!=-1 && visitteamid!=-1 && datePickerID.getValue()!=null && gameFormatID.getValue()!=null && stadiumID.getValue()!=null && gameTimeID.getText()!=null){
 
             String date = datePickerID.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             String matchType = gameFormatID.getValue();
@@ -134,7 +133,7 @@ public class Controller {
 
             int order=1;
             int matchTypeID=1;
-            int stadiumId=1;
+            int stdmId=1;
             String hostTeamSF = null,opponentSF = null;
 
             switch (matchType) {
@@ -189,7 +188,7 @@ public class Controller {
                     "WHERE STADIUM_NAME = " + "'" + stadium + "'";
             ResultSet rs = dc.getQueryResult(stadiumIDquery);
             if(rs.next()){
-                stadiumId= rs.getInt("STADIUM_ID");
+                stdmId= rs.getInt("STADIUM_ID");
             }
 
             String matchTypeIDquery="SELECT MATCH_TYPE_ID FROM MATCH_TYPE " +
@@ -200,11 +199,28 @@ public class Controller {
             }
             System.out.println("Here I am - 3");
             String insert_query="INSERT INTO CRICBUZZ.FIXTURE(TOUR_ID, DATETIME, STADIUM_ID, MATCH_TYPE_ID, ORDERING)\n" +
-                    "VALUES(" + tourID +",TO_DATE('"+date+" "+time+"', 'DD/MM/YYYY HH24:MI:SS')," + stadiumId + "," + matchTypeID + "," + order + ")";
+                    "VALUES(" + tourID +",TO_DATE('"+date+" "+time+"', 'DD/MM/YYYY HH24:MI:SS')," + stdmId + "," + matchTypeID + "," + order + ")";
 
             String fixId[] = {"FIXTURE_ID"};
             System.out.println("Here I am - 4");
-            dc.doUpdate(insert_query, fixId);
+            boolean v = dc.doUpdate(insert_query, fixId);
+            int fixture_id = -1;
+            if(v) {
+                ResultSet fixIdRes = dc.generatedKeys();
+                if(fixIdRes.next())
+                    fixture_id = fixIdRes.getInt(1);
+                fixIdRes.close();
+            }
+            dc.closeConnection();
+
+            if(fixture_id!=-1) {
+                dc = new DatabaseConnection();
+                String insert_query_match = "INSERT INTO CRICBUZZ.MATCH (FIXTURE_ID,TOUR_ID,HOST_TEAM,VISITING_TEAM,MATCH_TYPE_ID,MATCH_STATUS)\n" +
+                        "VALUES(" + fixture_id + "," + tourID + "," + hostteamid + "," + visitteamid + "," + matchTypeID + ", 'Upcoming')";
+                String matchId[] = {"MATCH_ID"};
+                dc.doUpdate(insert_query_match, matchId);
+                dc.closeConnection();
+            }
 
             gameTimeID.clear();
             datePickerID.getEditor().clear();
@@ -223,7 +239,6 @@ public class Controller {
 
             System.out.println("Here I am - 7");
 
-            dc.closeConnection();
             dc = new DatabaseConnection();
             String hostTeamSFquery="SELECT TEAM_SF FROM CRICBUZZ.TEAM WHERE TEAM_NAME="+"'"+hostTeamName.getValue()+"'";
             try (ResultSet rs4 = dc.getQueryResult(hostTeamSFquery)) {
@@ -260,13 +275,11 @@ public class Controller {
 
 
                 String hostteamquery = "SELECT TEAM_ID FROM CRICBUZZ.TEAM WHERE TEAM_NAME =" + "'" + hostTeam + "'";
-                int hostteamid = -1;
                 ResultSet rs = dc.getQueryResult(hostteamquery);
                 if (rs.next())
                     hostteamid = rs.getInt("TEAM_ID");
 
                 String visitteamquery = "SELECT TEAM_ID FROM CRICBUZZ.TEAM WHERE TEAM_NAME =" + "'" + visitingTeam + "'";
-                int visitteamid = -1;
                 rs = dc.getQueryResult(visitteamquery);
                 if (rs.next())
                     visitteamid = rs.getInt("TEAM_ID");

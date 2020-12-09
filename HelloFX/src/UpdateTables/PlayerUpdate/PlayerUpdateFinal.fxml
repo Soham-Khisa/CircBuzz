@@ -1,11 +1,127 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UpdateTables.PlayerUpdate.PlayerUpdateFinalController">
+<AnchorPane prefHeight="639.0" prefWidth="661.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UpdateTables.PlayerUpdate.PlayerUpdateFinalController">
    <children>
-      <Button layoutX="498.0" layoutY="35.0" mnemonicParsing="false" onAction="#backToPlayerUpdate" text="BACK" />
+      <TextField fx:id="firstname" layoutX="140.0" layoutY="101.0" prefHeight="17.0" prefWidth="160.0" promptText="First Name" />
+      <Label layoutX="45.0" layoutY="101.0" prefHeight="25.0" prefWidth="96.0" text="FIRST NAME :">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="45.0" layoutY="137.0" prefHeight="25.0" prefWidth="96.0" text="LAST NAME : ">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="lastname" layoutX="140.0" layoutY="137.0" prefHeight="25.0" prefWidth="160.0" promptText="Last Name" />
+      <Label layoutX="45.0" layoutY="172.0" prefHeight="25.0" prefWidth="53.0" text="BORN : ">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="birthplace" layoutX="100.0" layoutY="172.0" prefHeight="25.0" prefWidth="205.0" promptText="Birth Place" />
+      <DatePicker fx:id="dob" layoutX="160.0" layoutY="210.0" prefHeight="17.0" prefWidth="166.0" />
+      <Label layoutX="45.0" layoutY="210.0" prefHeight="25.0" prefWidth="118.0" text="DATE OF BIRTH : ">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Label>
+      <Button layoutX="589.0" layoutY="25.0" mnemonicParsing="false" onAction="#backToPlayerUpdate" text="BACK" />
+      <Button layoutX="325.0" layoutY="554.0" mnemonicParsing="false" onAction="#UpdatePlayer" prefHeight="25.0" prefWidth="96.0" text="UPDATE" textFill="#d30a0a">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Label layoutX="45.0" layoutY="74.0" text="NB : Please do not leave any of the fields empty" textFill="#d70505">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Label>
+      <Button fx:id="button" layoutX="415.0" layoutY="50.0" mnemonicParsing="false" onAction="#showOrhideOriginal" prefHeight="30.0" prefWidth="144.0" text="SHOW ORIGINALS" textFill="#030303">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Button>
+      <Label fx:id="origfname" layoutX="415.0" layoutY="105.0" prefHeight="17.0" prefWidth="160.0">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label fx:id="origlname" layoutX="415.0" layoutY="141.0" prefHeight="17.0" prefWidth="160.0">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label fx:id="origbirthplace" layoutX="415.0" layoutY="176.0" prefHeight="17.0" prefWidth="160.0">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label fx:id="origstatus" layoutX="415.0" layoutY="326.0" prefHeight="17.0" prefWidth="160.0">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label fx:id="origdob" layoutX="415.0" layoutY="214.0" prefHeight="17.0" prefWidth="160.0">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label fx:id="updatemessage" layoutX="330.0" layoutY="526.0" prefHeight="17.0" prefWidth="295.0" textFill="#1dc30e" />
+      <ComboBox fx:id="status" layoutX="45.0" layoutY="322.0" prefHeight="17.0" prefWidth="257.0" promptText="STATUS" />
+      <Label layoutX="45.0" layoutY="384.0" prefHeight="25.0" prefWidth="61.0" text="DEATH : ">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Label>
+      <DatePicker fx:id="death" layoutX="105.0" layoutY="384.0" prefHeight="25.0" prefWidth="160.0" />
+      <Label layoutX="45.0" layoutY="357.0" prefHeight="17.0" prefWidth="295.0" text="* DEATH must be left empty if the status is not &quot;Died&quot;" textFill="#dd320b" />
+      <Label fx:id="origdeath" layoutX="415.0" layoutY="388.0" prefHeight="17.0" prefWidth="160.0">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <ComboBox fx:id="role" layoutX="45.0" layoutY="247.0" prefHeight="17.0" prefWidth="150.0" promptText="ROLE" />
+      <ComboBox fx:id="jersey" layoutX="45.0" layoutY="286.0" prefHeight="17.0" prefWidth="150.0" promptText="JERSEY" />
+      <ImageView fx:id="playerImage" fitHeight="191.0" fitWidth="216.0" layoutX="45.0" layoutY="422.0" pickOnBounds="true" preserveRatio="true" />
+      <Label layoutX="324.0" layoutY="452.0" text="* Image can be left empty" textFill="#d70505">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Label>
+      <Button fx:id="changeimage" layoutX="326.0" layoutY="477.0" mnemonicParsing="false" onAction="#changeImage" prefHeight="30.0" prefWidth="144.0" text="CHANGE IMAGE" textFill="#030303">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Button>
+      <Label fx:id="origjersey" layoutX="415.0" layoutY="290.0" prefHeight="17.0" prefWidth="160.0">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Label fx:id="origrole" layoutX="415.0" layoutY="251.0" prefHeight="17.0" prefWidth="160.0">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Button layoutX="509.0" layoutY="477.0" mnemonicParsing="false" onAction="#showPlayerStats" prefHeight="30.0" prefWidth="126.0" text="PLAYER STATS">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Button>
+      <Button layoutX="279.0" layoutY="384.0" mnemonicParsing="false" onAction="#clearDeathdate" text="CLEAR DEATH">
+         <font>
+            <Font name="System Bold Italic" size="12.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

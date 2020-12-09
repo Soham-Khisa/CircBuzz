@@ -144,6 +144,40 @@ public class Team {
 
     }
 
+    public Team(int team_ID) throws SQLException {
+        this.team_ID = team_ID;
+        DatabaseConnection dc= new DatabaseConnection();
+        String query="SELECT * FROM TEAM\n" +
+                "WHERE TEAM_ID="+team_ID;
+        ResultSet rs=dc.getQueryResult(query);
+        if(rs.next()){
+            team_Name=rs.getString("TEAM_NAME");
+            established_date=rs.getDate("ESTABLISH_DATE");
+            head_coach=rs.getString("HEAD_COACH");
+            board_president=rs.getString("BOARD_PRESIDENT");
+            team_sf=rs.getString("TEAM_SF");
+        }
+    }
+
+    public void makeTeamWithSF() throws SQLException {
+        DatabaseConnection dc= new DatabaseConnection();
+        ResultSet rs=dc.getQueryResult("SELECT * FROM TEAM\n" +
+                "WHERE TEAM_SF='"+team_sf+"'");
+        if(rs.next()){
+            team_ID=rs.getInt("TEAM_ID");
+            team_Name=rs.getString("TEAM_NAME");
+            established_date=rs.getDate("ESTABLISH_DATE");
+            head_coach=rs.getString("HEAD_COACH");
+            board_president=rs.getString("BOARD_PRESIDENT");
+
+        }
+
+    }
+
+    public Team(String team_SF) {
+        this.team_sf = team_SF;
+    }
+
     public Team(Integer team_ID, String team_Name, String team_sf, Date established_date, String head_coach, String board_president, ImageView imageholder) {
         this.team_ID = team_ID;
         this.team_Name = team_Name;

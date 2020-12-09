@@ -1,28 +1,43 @@
 package frontPage;
 
 import Database.DatabaseConnection;
+import JavaCode.Match;
+import TableView.EverydayMatch;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
-public class Controller<initialize> {
+public class Controller extends Component {
+
+    public TableView<EverydayMatch> todaysMatchTable;
+    public TableColumn<EverydayMatch,String> matchDetails;
+    public TableColumn<EverydayMatch,String> time;
+    public TableColumn<EverydayMatch, Integer> matchID;
+    public Button todayMatchButtonID;
+
     @FXML
     private TextField umpireFirstName;
     @FXML
@@ -47,14 +62,101 @@ public class Controller<initialize> {
     private Label stadiumlabel;
     @FXML
     private Label umpirelabel;
+    DatabaseConnection dc;
+    String fixtureIDQuery;
 
+    ResultSet rs;
+    ObservableList<EverydayMatch> oblist= FXCollections.observableArrayList();
+    Stage window;
 
-    public void makeSeriesAction(ActionEvent event) {
+    @FXML
+    public void initialize(){
+        todaysMatchTable.setVisible(false);
+        dc = new DatabaseConnection();
+        matchDetails.setCellValueFactory(new PropertyValueFactory<EverydayMatch,String>("matchDetails"));
+        time.setCellValueFactory(new PropertyValueFactory<EverydayMatch,String>("time"));
+        matchID.setCellValueFactory(new PropertyValueFactory<EverydayMatch, Integer>("matchID"));
+
+        matchDetails.setStyle("-fx-alignment:CENTER");
+        time.setStyle("-fx-alignment:CENTER");
+        matchID.setStyle("-fx-alignment:CENTER");
+
+        fixtureIDQuery="SELECT FIXTURE_ID\n" +
+                "FROM FIXTURE\n" +
+                "WHERE TO_CHAR(DATETIME,'YYYY-MM-DD') = '" + LocalDate.now() + "'";
+        rs = dc.getQueryResult(fixtureIDQuery);
+        Callback<DatePicker, DateCell> callB = new Callback<DatePicker, DateCell>() {
+            @Override
+            public DateCell call(final DatePicker param) {
+                return new DateCell() {
+                    @Override
+                    public void updateItem(LocalDate item, boolean empty) {
+                        super.updateItem(item, empty); //To change body of generated methods, choose Tools | Templates.
+                        LocalDate today = LocalDate.now();
+                        setDisable(empty || item.compareTo(today.minusYears(20)) > 0);
+                    }
+
+                };
+            }
+
+        };
+        umpire_dob.setDayCellFactory(callB);
+        ///umpire_dob.setValue(LocalDate.now().minusYears(20));
+       /* todaysMatchTable.setRowFactory(tv->{
+            matchDetails.setOn
+        });*/
+        todaysMatchTable.setRowFactory( tv -> {
+            TableRow<EverydayMatch> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+                    EverydayMatch rowData = row.getItem();
+                    int match_id=rowData.getMatchID();
+                    try {
+                        Match match= new Match(match_id);
+                        switch (match.getMatch_status()) {
+                            case "Live":
+                                JOptionPane.showMessageDialog(null, "The match is in live");
+                                break;
+                            case "End":
+                                JOptionPane.showMessageDialog(null, "The match has been ended");
+                                break;
+                            case " ":
+                                break;
+                            case "Upcoming":
+                                int response = JOptionPane.showConfirmDialog(this, "Do you want to start the match?", "Confirmation Dialogue", JOptionPane.YES_NO_OPTION);
+                                if (response == JOptionPane.YES_OPTION) {
+                                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/startGame/startGame.fxml"));
+                                    Parent root = null;
+                                    try {
+                                        root = loader.load();
+                                        assert root != null;
+                                        window.setScene(new Scene(root));
+                                        window.show();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    startGame.Controller controller = loader.getController();
+                                    try {
+                                        controller.transferTeams(match.getMatchID());
+                                    } catch (SQLException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                break;
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            return row ;
+        });
     }
+
 
     public void umpireEnrolAction(ActionEvent event) {
         if (umpireFirstName.getText() != null && umpireLastName.getText() != null && umpireCountry.getText() != null && umpire_dob.getValue() != null) {
-            DatabaseConnection dc = new DatabaseConnection();
+            dc = new DatabaseConnection();
 
             String date = umpire_dob.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
@@ -82,8 +184,8 @@ public class Controller<initialize> {
 
     public void makeTourAction(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/makeTour/makeTour.fxml"));
-        Stage window= (Stage) ((Node) event.getSource()).getScene().getWindow();
-        window.setScene(new Scene(root, 660, 586));
+        window= (Stage) ((Node) event.getSource()).getScene().getWindow();
+        window.setScene(new Scene(root));
         window.show();
     }
 
@@ -91,7 +193,7 @@ public class Controller<initialize> {
     public void enrolStadiumAction(ActionEvent event) throws SQLException {
         if (stadiumName.getText() != null && stadiumLocation.getText() != null && stadiumCountry.getText() != null && seatNoStadium.getText() != null) {
             int seatNum = Integer.parseInt(seatNoStadium.getText());
-            DatabaseConnection dc = new DatabaseConnection();
+            dc = new DatabaseConnection();
 
             String query = "INSERT INTO CRICBUZZ.STADIUM (STADIUM_NAME, LOCATION, COUNTRY, CAPACITY) " +
                     "VALUES ('" + stadiumName.getText() + "', '" + stadiumLocation.getText() + "', '" + stadiumCountry.getText() + "', " + seatNum + ")";
@@ -135,7 +237,7 @@ public class Controller<initialize> {
 
     public void enrolAteamAction(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/teamEnrol/teamEnrol.fxml"));
-        Stage window= (Stage) ((Node) event.getSource()).getScene().getWindow();
+        window= (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.setScene(new Scene(root));
         window.show();
     }
@@ -160,21 +262,11 @@ public class Controller<initialize> {
         }
     }
 
-    public void makeWCaction(ActionEvent event) {
-    }
-
-    public void playGame1Action(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/startGame/startGame.fxml"));
-        Stage window= (Stage) ((Node) event.getSource()).getScene().getWindow();
-        window.setScene(new Scene(root, 660, 580));
-        window.show();
-    }
-
     public void updateInfo(ActionEvent event) {
         Parent root = null;
         try {
             root = FXMLLoader.load(getClass().getResource("/UpdateTables/updateinfo.fxml"));
-            Stage window= (Stage) ((Node) event.getSource()).getScene().getWindow();
+            window= (Stage) ((Node) event.getSource()).getScene().getWindow();
             window.setScene(new Scene(root));
             window.show();
         } catch (IOException e) {
@@ -182,9 +274,72 @@ public class Controller<initialize> {
         }
     }
 
-    public void playGame2Action(ActionEvent event) {
-    }
 
-    public void playGame3Action(ActionEvent event) {
+    public void todayMatchButtonAction(ActionEvent event) throws SQLException, IOException {
+        if(todaysMatchTable.isVisible()) {
+            JOptionPane.showMessageDialog(null, "Today's matches are given in the table");
+            return;
+        }
+
+        window= (Stage) ((Node) event.getSource()).getScene().getWindow();
+        int[] fixtureID = new int[10];
+        int ordering=0,count=0;
+
+        ResultSet rs2;
+        while(rs.next()){
+            fixtureID[count++]=rs.getInt("FIXTURE_ID");
+        }
+        if(count!=0){
+            todaysMatchTable.setVisible(true);
+        }
+        else{
+            JOptionPane.showMessageDialog(null,"No Match for today");
+            return;
+        }
+        String hostTeam=null;
+        String visitingTeam=null;
+        String stadium=null,timE=null;
+        int matchID=0;
+        for(int i=0; i<count; i++){
+            int fixtureId=fixtureID[i];
+            String matchType=null,matchDetails=null;
+            rs2 = dc.getQueryResult("SELECT ORDERING FROM FIXTURE\n" +
+                    "WHERE FIXTURE_ID=" + fixtureId);
+            if(rs2.next()) ordering= rs2.getInt("ORDERING");
+            rs2.close();
+            rs2=dc.getQueryResult("SELECT MATCH_ID FROM MATCH\n" +
+                    "WHERE FIXTURE_ID="+fixtureId);
+            if(rs2.next()) matchID=rs2.getInt("MATCH_ID");
+            rs2.close();
+            rs2=dc.getQueryResult("SELECT TEAM_SF FROM TEAM\n" +
+                    "WHERE TEAM_ID = (SELECT HOST_TEAM FROM MATCH WHERE FIXTURE_ID="+fixtureId+")");
+            if(rs2.next()) hostTeam=rs2.getString("TEAM_SF");
+            rs2.close();
+            rs2=dc.getQueryResult("SELECT TEAM_SF FROM TEAM\n" +
+                    "WHERE TEAM_ID = (SELECT VISITING_TEAM FROM MATCH WHERE FIXTURE_ID="+fixtureId+")");
+            if(rs2.next()) visitingTeam=rs2.getString("TEAM_SF");
+            rs2.close();
+            rs2=dc.getQueryResult("SELECT STADIUM_NAME FROM STADIUM\n" +
+                    "WHERE STADIUM_ID=(SELECT STADIUM_ID FROM FIXTURE WHERE FIXTURE_ID="+fixtureId+")");
+            if(rs2.next()) stadium=rs2.getString("STADIUM_NAME");
+            rs2.close();
+            rs2=dc.getQueryResult("SELECT MATCH_TITLE FROM MATCH_TYPE\n" +
+                    "WHERE MATCH_TYPE_ID=(SELECT MATCH_TYPE_ID FROM FIXTURE WHERE FIXTURE_ID="+fixtureId+")");
+            if(rs2.next()) matchType=rs2.getString("MATCH_TITLE");
+            rs2.close();
+            rs2=dc.getQueryResult("SELECT TO_CHAR(DATETIME,'HH24:MI:SS') AS TIME FROM FIXTURE\n" +
+                    "WHERE FIXTURE_ID="+fixtureId);
+            if(rs2.next()) timE=rs2.getString("TIME");
+
+            if(ordering==1) matchType="1st "+matchType;
+            else if(ordering==2) matchType="2nd "+matchType;
+            else if(ordering==3) matchType="3rd "+matchType;
+            else if(ordering==4) matchType="4th "+matchType;
+            else if(ordering==5) matchType="5th "+matchType;
+            matchDetails=matchType+"             "+hostTeam+" vs "+visitingTeam+"\n"+stadium;
+            EverydayMatch em= new EverydayMatch(matchDetails,timE,hostTeam,visitingTeam,matchID);
+            oblist.add(em);
+        }
+        todaysMatchTable.setItems(oblist);
     }
 }

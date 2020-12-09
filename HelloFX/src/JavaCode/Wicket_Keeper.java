@@ -10,6 +10,7 @@ import java.sql.SQLException;
 
 public class Wicket_Keeper {
     private int playerID;
+    private int match_type_id;
     private int stampings;
     private int catches;
 
@@ -18,8 +19,9 @@ public class Wicket_Keeper {
         this.stampings = stampings;
         this.catches = catches;
     }
-    public Wicket_Keeper(int playerID) {
+    public Wicket_Keeper(int playerID, int match_type_id) {
         this.playerID = playerID;
+        this.match_type_id = match_type_id;
     }
 
     public int getPlayerID() {
@@ -57,8 +59,8 @@ public class Wicket_Keeper {
 
     public boolean insertWicketKeeper() {
         DatabaseConnection dc = new DatabaseConnection();
-        String insert = "INSERT INTO CRICBUZZ.WICKET_KEEPER (PLAYER_ID) " +
-                "VALUES (" + playerID + ")";
+        String insert = "INSERT INTO CRICBUZZ.WICKET_KEEPER (PLAYER_ID, MATCH_TYPE_ID) " +
+                "VALUES (" + playerID + ", " + match_type_id + ")";
         boolean v = dc.doUpdate(insert);
         if(v) {
             System.out.println("Wicket-keeper insert is successful");
